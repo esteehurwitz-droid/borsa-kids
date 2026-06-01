@@ -1,0 +1,17 @@
+{
+  "name": "borsa-kids-server",
+  "version": "1.0.0",
+  "description": "Market simulation server for Borsa Kids educational stock game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["stocks", "market", "simulation", "education", "game"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

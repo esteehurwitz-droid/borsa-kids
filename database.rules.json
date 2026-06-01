@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "market": {
+      ".read": true,
+      "stocks": {
+        "$symbol": {
+          ".read": true,
+          "price": { ".write": false },
+          "change": { ".write": false },
+          "changePercent": { ".write": false },
+          "history": { ".write": false }
+        }
+      }
+    },
+    "players": {
+      "$userId": {
+        ".read": "$uid === auth.uid || root.child('players').child($userId).child('public').val() === true",
+        ".write": "$uid === auth.uid",
+        "portfolio": { ".write": "$uid === auth.uid" },
+        "balance": { ".write": false },
+        "xp": { ".write": false },
+        "name": { ".write": "$uid === auth.uid" },
+        "avatar": { ".write": "$uid === auth.uid" }
+      }
+    },
+    "leaderboard": {
+      ".read": true,
+      ".write": false
+    }
+  }
+}
