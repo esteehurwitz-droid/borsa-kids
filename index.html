@@ -1796,6 +1796,61 @@ function showNotification(msg, type='success') {
 }
 
 // ════════════════════════════════════════════════════════
+//  LIVE MARKET DATA — Yahoo Finance via proxy
+// ════════════════════════════════════════════════════════
+const SYMBOLS = stocksBase.map(s => s.symbol).join(',');
+let liveDataOK = false;
+
+async function fetchLivePrices() {
+    const url = `https://corsproxy.io/?https://query1.finance.yahoo.com/v7/finance/quote?symbols=${SYMBOLS}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`;
+    try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) throw new Error('bad response');
+        const data = await res.json();
+        const quotes = data?.quoteResponse?.result;
+        if (!quotes || quotes.length === 0) throw new Error('no data');
+
+        quotes.forEach(q => {
+            const stock = stocks.find(s => s.symbol === q.symbol);
+            if (!stock) return;
+            const newPrice = q.regularMarketPrice;
+            if (!newPrice) return;
+            stock.change = q.regularMarketChange ?? (newPrice - stock.price);
+            stock.price  = newPrice;
+            priceHistory[stock.symbol].push(newPrice);
+            if (priceHistory[stock.symbol].length > 7) priceHistory[stock.symbol].shift();
+        });
+
+        liveDataOK = true;
+        updateLiveIndicator(true);
+        renderStocks();
+        renderPortfolio();
+        updateHeader();
+        saveState();
+    } catch (e) {
+        // silently fall back to simulation
+        updateLiveIndicator(false);
+    }
+}
+
+function updateLiveIndicator(isLive) {
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    if (!dot || !text) return;
+    if (isLive) {
+        dot.className = 'status-dot';
+        const hour = new Date().getHours();
+        const afterHours = hour < 10 || hour >= 23; // approx US market (IL time 16:30-23:00)
+        text.textContent = afterHours
+            ? (T[currentLang]?.marketNight ?? 'After Hours 🌙')
+            : (T[currentLang]?.marketOpen  ?? 'Live 🟢');
+    } else {
+        dot.className = 'status-dot closed';
+        text.textContent = T[currentLang]?.marketNight ?? 'Simulated';
+    }
+}
+
+// ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
 function init() {
@@ -1810,10 +1865,15 @@ function init() {
         document.getElementById('mainApp').style.display = 'block';
         setLang(currentLang);
     } else {
-        setLang('he'); // default onboarding lang
+        setLang('he');
     }
 
-    setInterval(marketTick, 8000);
+    // Fetch live prices immediately, then every 60 seconds
+    fetchLivePrices();
+    setInterval(fetchLivePrices, 60000);
+
+    // Simulation fills the gaps when market is closed / fetch fails
+    setInterval(() => { if (!liveDataOK) marketTick(); }, 8000);
     setInterval(triggerRandomEvent, 45000);
     setInterval(saveState, 30000);
 }
