@@ -1,9 +1,15 @@
+require('dotenv').config(); // Load .env file
+
 const express = require('express');
 const cors = require('cors');
+const https = require('https');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Get API key from environment or use default (get yours free at https://finnhub.io)
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || 'demo';
 
 // ═══════════════════════════════════════════════════════════════
 // STOCK DATA AND MARKET STATE
@@ -52,7 +58,75 @@ stocksBase.forEach(stock => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// REALISTIC MARKET SIMULATION
+// FETCH REAL MARKET PRICES
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Fetch real price from Finnhub API
+ * Free tier: https://finnhub.io (register for free API key)
+ */
+function fetchRealPrice(symbol) {
+  return new Promise((resolve) => {
+    if (FINNHUB_API_KEY === 'demo') {
+      // If using demo key, return undefined and fall back to local simulation
+      resolve(null);
+      return;
+    }
+
+    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json && json.c) { // c = current price
+            resolve({
+              price: json.c,
+              change: json.d ?? 0, // d = change in price
+              changePercent: json.dp ?? 0, // dp = change percent
+            });
+          } else {
+            resolve(null);
+          }
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }).on('error', () => resolve(null));
+  });
+}
+
+/**
+ * Update prices from real market data
+ */
+async function updateRealPrices() {
+  const symbols = stocksBase.map(s => s.symbol);
+
+  for (const symbol of symbols) {
+    const realData = await fetchRealPrice(symbol);
+    if (realData && realData.price > 0) {
+      const stock = marketState[symbol];
+      if (stock) {
+        const oldPrice = stock.price;
+        stock.price = realData.price;
+        stock.change = realData.change;
+        stock.changePercent = realData.changePercent;
+
+        // Update price history
+        stock.history.push(stock.price);
+        if (stock.history.length > 7) {
+          stock.history.shift();
+        }
+
+        console.log(`[LIVE] ${symbol}: $${stock.price} (${stock.changePercent > 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%)`);
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REALISTIC MARKET SIMULATION (Fallback)
 // ═══════════════════════════════════════════════════════════════
 
 /**
@@ -166,8 +240,10 @@ function simulationTick() {
   triggerMarketNews();
 }
 
-// Run simulation every second
-setInterval(simulationTick, 1000);
+// Update real prices every 60 seconds (Finnhub rate limit friendly)
+setInterval(updateRealPrices, 60000);
+// Fallback: Run simulation every 5 seconds when not using real prices
+setInterval(simulationTick, 5000);
 
 // ═══════════════════════════════════════════════════════════════
 // API ENDPOINTS
@@ -246,7 +322,19 @@ app.get('/api/market-status', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Market simulation server running on port ${PORT}`);
-  console.log(`📊 Simulating ${Object.keys(marketState).length} stocks`);
-  console.log(`🔄 Market updates every 1 second`);
+  console.log(`🚀 Stock market server running on port ${PORT}`);
+  console.log(`📊 Tracking ${Object.keys(marketState).length} stocks`);
+
+  if (FINNHUB_API_KEY === 'demo') {
+    console.log(`\n⚠️  Using demo mode (simulated prices)`);
+    console.log(`💡 Get free real-time prices:\n`);
+    console.log(`   1. Go to https://finnhub.io`);
+    console.log(`   2. Sign up free (takes 1 minute)`);
+    console.log(`   3. Copy your API key`);
+    console.log(`   4. Set: export FINNHUB_API_KEY="your-api-key"`);
+    console.log(`   5. Restart server: npm start\n`);
+  } else {
+    console.log(`\n✅ Using REAL LIVE market prices from Finnhub`);
+    console.log(`🔄 Real prices update every 60 seconds`);
+  }
 });
