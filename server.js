@@ -43,6 +43,35 @@ const stocksBase = [
   {symbol:'ASML',name:'ASML',icon:'🔭',sector:'International',price:680,vol:0.025},
 ];
 
+// Exchange rate for USD to NIS conversion
+let USD_TO_NIS = 3.7; // Default rate
+
+// Fetch current USD/NIS exchange rate
+function updateExchangeRate() {
+  const url = 'https://api.exchangerate-api.com/v4/latest/USD';
+  https.get(url, (res) => {
+    let data = '';
+    res.on('data', chunk => data += chunk);
+    res.on('end', () => {
+      try {
+        const json = JSON.parse(data);
+        if (json && json.rates && json.rates.ILS) {
+          USD_TO_NIS = json.rates.ILS;
+          console.log(`💱 USD/NIS rate updated: 1 USD = ${USD_TO_NIS.toFixed(2)} NIS`);
+        }
+      } catch (e) {
+        // Silently fail, use default rate
+      }
+    });
+  }).on('error', () => {
+    // Silently fail, use default rate
+  });
+}
+
+// Update exchange rate on startup and every hour
+updateExchangeRate();
+setInterval(updateExchangeRate, 3600000);
+
 // Initialize market state
 const marketState = {};
 stocksBase.forEach(stock => {
@@ -247,7 +276,7 @@ setInterval(simulationTick, 5000);
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * GET /api/stocks - Get current market state
+ * GET /api/stocks - Get current market state (with USD→NIS conversion)
  */
 app.get('/api/stocks', (req, res) => {
   const data = Object.values(marketState).map(stock => ({
@@ -255,16 +284,16 @@ app.get('/api/stocks', (req, res) => {
     name: stock.name,
     icon: stock.icon,
     sector: stock.sector,
-    price: stock.price,
-    change: stock.change,
-    changePercent: stock.changePercent,
-    history: stock.history
+    price: Math.round(stock.price * USD_TO_NIS * 100) / 100, // Convert USD to NIS
+    change: Math.round(stock.change * USD_TO_NIS * 100) / 100,
+    changePercent: stock.changePercent, // Percentage stays the same
+    history: stock.history.map(h => Math.round(h * USD_TO_NIS * 100) / 100) // Convert history too
   }));
   res.json(data);
 });
 
 /**
- * GET /api/stocks/:symbol - Get single stock
+ * GET /api/stocks/:symbol - Get single stock (with USD→NIS conversion)
  */
 app.get('/api/stocks/:symbol', (req, res) => {
   const stock = marketState[req.params.symbol.toUpperCase()];
@@ -276,10 +305,10 @@ app.get('/api/stocks/:symbol', (req, res) => {
     name: stock.name,
     icon: stock.icon,
     sector: stock.sector,
-    price: stock.price,
-    change: stock.change,
+    price: Math.round(stock.price * USD_TO_NIS * 100) / 100,
+    change: Math.round(stock.change * USD_TO_NIS * 100) / 100,
     changePercent: stock.changePercent,
-    history: stock.history
+    history: stock.history.map(h => Math.round(h * USD_TO_NIS * 100) / 100)
   });
 });
 
