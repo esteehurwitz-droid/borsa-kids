@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>בורסת הילדים</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --primary: #0f3460;
+            --accent: #667eea;
+            --accent2: #764ba2;
+            --green: #00b09b;
+            --red: #ff416c;
+            --gold: #ffd700;
+            --bg: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ── ONBOARDING ── */
+        #onboarding {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        #onboarding h1 { font-size: 32px; margin-bottom: 10px; }
+        #onboarding .sub { opacity: 0.7; font-size: 15px; margin-bottom: 32px; }
+
+        .avatar-grid {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .avatar-opt {
+            font-size: 36px;
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .avatar-opt.selected {
+            border-color: var(--gold);
+            background: rgba(255,215,0,0.2);
+            transform: scale(1.15);
+        }
+
+        .name-input {
+            width: 100%;
+            max-width: 280px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .name-input::placeholder { color: rgba(255,255,255,0.4); }
+        .name-input:focus { border-color: var(--gold); }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--green), #96c93d);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover { transform: scale(1.04); }
+
+        /* ── LANG BAR ── */
+        .lang-bar {
+            background: #0a0a1a;
+            padding: 6px 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1.5px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.55);
+            font-size: 11px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-color: transparent;
+            color: white;
+        }
+
+        .lang-divider { color: rgba(255,255,255,0.2); font-size: 11px; }
+
+        /* ── HEADER ── */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 14px 16px;
+            color: white;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-avatar {
+            font-size: 22px;
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-name { font-size: 14px; font-weight: bold; }
+        .player-level { font-size: 10px; opacity: 0.6; }
+
+        .market-status { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-dot.closed { background: #ff4444; animation: none; }
+
+        @keyframes pulse {
+            0%,100% { opacity:1; } 50% { opacity:0.3; }
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .balance-info .label { font-size: 10px; opacity:0.7; margin-bottom:2px; }
+        .balance-amount { font-size: 24px; font-weight: bold; color: #00f2fe; }
+        .profit-loss { font-size: 13px; }
+        .profit-loss.pos { color: #00ff88; }
+        .profit-loss.neg { color: #ff6b6b; }
+
+        /* XP BAR */
+        .xp-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .xp-label { font-size: 10px; opacity: 0.6; white-space: nowrap; }
+
+        .xp-bar-bg {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), #ffaa00);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* SESSION */
+        .session-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 6px 10px;
+        }
+
+        .session-badge .code-label { font-size: 10px; opacity: 0.6; }
+        .session-badge .code-value {
+            font-size: 14px; font-weight: bold;
+            letter-spacing: 3px; color: var(--gold); font-family: monospace;
+        }
+
+        .connect-btn {
+            margin-right: auto;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none; color: white;
+            font-size: 11px; padding: 5px 10px;
+            border-radius: 8px; cursor: pointer; white-space: nowrap;
+        }
+
+        html[dir="ltr"] .connect-btn { margin-right: 0; margin-left: auto; }
+
+        /* BADGES ROW */
+        .badges-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .badge {
+            font-size: 18px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            title: '';
+        }
+
+        /* ── TABS ── */
+        .tabs {
+            display: flex;
+            background: #f0f2f5;
+            border-bottom: 1px solid #e0e0e0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab {
+            flex: 1;
+            min-width: 60px;
+            padding: 11px 4px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            color: #888;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .content { padding: 14px; min-height: 400px; }
+
+        /* ── MARKET ── */
+        .event-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white; padding: 10px 14px;
+            border-radius: 10px; font-size: 12px;
+            margin-bottom: 12px; display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .sector-filter {
+            display: flex; gap: 6px;
+            overflow-x: auto; padding-bottom: 8px;
+            margin-bottom: 10px; scrollbar-width: none;
+        }
+
+        .sector-filter::-webkit-scrollbar { display: none; }
+
+        .sector-btn {
+            white-space: nowrap; padding: 5px 12px;
+            border-radius: 20px; border: 1.5px solid #e0e0e0;
+            background: white; font-size: 11px; cursor: pointer; transition: all 0.2s;
+        }
+
+        .sector-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .stock-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 11px 12px; margin-bottom: 8px;
+            background: #f8f9fa; border-radius: 12px;
+            cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s;
+        }
+
+        .stock-item:hover { border-color: var(--accent); background: #f0f1ff; }
+
+        .stock-left { display: flex; align-items: center; gap: 10px; }
+
+        .stock-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+
+        .stock-info .stock-name { font-weight: bold; font-size: 14px; }
+        .stock-info .stock-desc { color: #aaa; font-size: 10px; margin-top: 1px; }
+
+        .stock-right { text-align: left; }
+        html[dir="rtl"] .stock-right { text-align: right; }
+
+        .price { font-size: 15px; font-weight: bold; }
+
+        .mini-chart {
+            display: flex; align-items: flex-end; gap: 2px;
+            height: 18px; margin: 3px 0;
+        }
+
+        .mini-bar { width: 3px; border-radius: 2px; transition: height 0.3s; }
+
+        .change-badge {
+            font-size: 11px; padding: 2px 7px;
+            border-radius: 8px; font-weight: bold;
+        }
+
+        .positive { background: #d4edda; color: #155724; }
+        .negative { background: #f8d7da; color: #721c24; }
+
+        /* ── PORTFOLIO ── */
+        .portfolio-summary {
+            display: flex; gap: 8px; margin-bottom: 14px;
+        }
+
+        .summary-card {
+            flex: 1; background: #f8f9fa;
+            border-radius: 12px; padding: 10px; text-align: center;
+        }
+
+        .summary-card .s-label { font-size: 10px; color: #888; margin-bottom: 4px; }
+        .summary-card .s-value { font-size: 14px; font-weight: bold; }
+
+        .portfolio-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; margin-bottom: 8px;
+            background: #f8f9fa; border-radius: 12px; cursor: pointer;
+        }
+
+        .holding-info .holding-name { font-weight: bold; font-size: 14px; }
+        .holding-info .holding-qty { color: #888; font-size: 11px; margin-top: 2px; }
+        .holding-value { text-align: left; }
+        html[dir="rtl"] .holding-value { text-align: right; }
+        .current-value { font-weight: bold; font-size: 14px; }
+
+        .empty-state {
+            text-align: center; padding: 40px 20px; color: #aaa;
+        }
+
+        .empty-state .emoji { font-size: 48px; margin-bottom: 10px; }
+
+        /* ── LEADERBOARD ── */
+        .leaderboard-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; margin-bottom: 8px;
+            background: #f8f9fa; border-radius: 12px;
+        }
+
+        .rank-badge {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 13px; flex-shrink: 0;
+        }
+
+        .rank-1 { background: var(--gold); color: #333; }
+        .rank-2 { background: #c0c0c0; color: #333; }
+        .rank-3 { background: #cd7f32; color: white; }
+        .rank-other { background: #e0e0e0; color: #555; }
+
+        .lb-player-info { flex: 1; }
+        .lb-name { font-weight: bold; font-size: 14px; }
+        .lb-sub { font-size: 11px; color: #888; margin-top: 2px; }
+        .lb-value { text-align: left; font-weight: bold; }
+        html[dir="rtl"] .lb-value { text-align: right; }
+
+        .lb-change-pos { color: #28a745; font-size: 12px; }
+        .lb-change-neg { color: #dc3545; font-size: 12px; }
+
+        .my-row { border: 2px solid var(--accent); background: #f0f1ff; }
+
+        /* ── COMPOUND CALC ── */
+        .calc-card {
+            background: linear-gradient(135deg, var(--primary), #16213e);
+            border-radius: 16px; padding: 18px; color: white; margin-bottom: 14px;
+        }
+
+        .calc-card h3 { font-size: 15px; margin-bottom: 14px; }
+
+        .calc-row {
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;
+        }
+
+        .calc-label { font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
+
+        .calc-slider {
+            -webkit-appearance: none;
+            width: 100%; height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.3);
+            outline: none;
+        }
+
+        .calc-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+        }
+
+        .calc-result {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 14px; text-align: center;
+        }
+
+        .calc-big { font-size: 28px; font-weight: bold; color: var(--gold); }
+        .calc-small { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+
+        .snowball { font-size: 40px; text-align: center; margin: 8px 0; }
+
+        /* ── LEARN ── */
+        .tutorial {
+            background: #f8f9fa; padding: 14px; border-radius: 14px;
+            margin-bottom: 10px; border-right: 4px solid var(--accent);
+        }
+
+        html[dir="ltr"] .tutorial { border-right: none; border-left: 4px solid var(--accent); }
+
+        .tutorial h3 { color: var(--primary); margin-bottom: 6px; font-size: 14px; }
+        .tutorial p { line-height: 1.6; font-size: 12px; color: #555; }
+
+        /* ── MODAL TRADE ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none; justify-content: center; align-items: flex-end; z-index: 1000;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-sheet {
+            background: white; width: 100%; max-width: 420px;
+            border-radius: 24px 24px 0 0; padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px; height: 4px; background: #e0e0e0;
+            border-radius: 2px; margin: 0 auto 20px;
+        }
+
+        .modal-stock-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+        .modal-icon {
+            width: 48px; height: 48px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; font-size: 26px;
+        }
+
+        .modal-stock-name { font-size: 20px; font-weight: bold; }
+        .modal-stock-desc { color: #888; font-size: 13px; }
+
+        .price-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f8f9fa; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;
+        }
+
+        .big-price { font-size: 24px; font-weight: bold; }
+
+        .qty-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+
+        .qty-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            background: #f0f1ff; font-size: 20px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .qty-input {
+            flex: 1; padding: 12px; border: 2px solid #e0e0e0;
+            border-radius: 12px; font-size: 18px; text-align: center;
+        }
+
+        .qty-input:focus { border-color: var(--accent); outline: none; }
+
+        .total-cost-row {
+            background: #f0f1ff; padding: 12px 16px; border-radius: 12px;
+            margin-bottom: 16px; display: flex; justify-content: space-between;
+        }
+
+        .total-cost-row .label { color: #888; font-size: 13px; }
+        .total-cost-row .amount { font-weight: bold; font-size: 15px; }
+
+        .action-btns { display: flex; gap: 10px; }
+
+        .btn {
+            flex: 1; padding: 14px; border: none; border-radius: 14px;
+            font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+        .btn-buy { background: linear-gradient(135deg, var(--green), #96c93d); color: white; }
+        .btn-sell { background: linear-gradient(135deg, var(--red), #ff4b2b); color: white; }
+        .btn-cancel { background: #f0f0f0; color: #666; flex: 0.5; }
+
+        /* ── CONNECT MODAL ── */
+        .connect-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px;
+        }
+
+        .connect-modal-overlay.show { display: flex; }
+
+        .connect-modal {
+            background: white; border-radius: 24px; padding: 26px;
+            width: 100%; max-width: 360px; text-align: center;
+        }
+
+        .connect-modal h2 { font-size: 20px; margin-bottom: 6px; }
+        .connect-modal .subtitle { color: #888; font-size: 13px; margin-bottom: 18px; }
+
+        .connect-tabs {
+            display: flex; background: #f0f0f0; border-radius: 12px;
+            padding: 4px; margin-bottom: 18px;
+        }
+
+        .connect-tab {
+            flex: 1; padding: 8px; border: none; border-radius: 10px;
+            background: none; font-size: 13px; cursor: pointer; font-weight: bold; color: #888;
+        }
+
+        .connect-tab.active { background: white; color: var(--primary); }
+
+        .my-code-display {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 16px; padding: 18px; margin-bottom: 14px;
+        }
+
+        .code-hint { color: rgba(255,255,255,0.7); font-size: 12px; margin-bottom: 8px; }
+
+        .big-code {
+            font-size: 36px; font-weight: bold; letter-spacing: 8px;
+            color: white; font-family: monospace;
+        }
+
+        .friend-code-input {
+            width: 100%; padding: 14px; border: 2px solid #e0e0e0;
+            border-radius: 12px; font-size: 22px; text-align: center;
+            letter-spacing: 5px; font-family: monospace; font-weight: bold; margin-bottom: 12px;
+        }
+
+        .friend-code-input:focus { border-color: var(--accent); outline: none; }
+
+        .join-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white; border: none; border-radius: 14px;
+            font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px;
+        }
+
+        .close-modal-btn { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 8px; }
+
+        /* ── ACHIEVEMENT TOAST ── */
+        .achievement-toast {
+            position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-150px);
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #333; padding: 14px 24px; border-radius: 16px;
+            text-align: center; font-size: 14px; font-weight: bold;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 4000; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+
+        .achievement-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ── NOTIFICATION ── */
+        .notification {
+            position: fixed; top: 16px; right: 16px; left: 16px;
+            max-width: 390px; margin: 0 auto;
+            background: #333; color: white; padding: 14px 18px;
+            border-radius: 14px; text-align: center; font-size: 14px;
+            transform: translateY(-120px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3000;
+        }
+
+        .notification.show { transform: translateY(0); }
+        .notification.success { background: linear-gradient(135deg, var(--green), #96c93d); }
+        .notification.error { background: linear-gradient(135deg, var(--red), #ff4b2b); }
+        .notification.info { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+
+        .hidden { display: none; }
+
+        @media (max-width: 440px) {
+            .container { border-radius: 0; min-height: 100vh; }
+            .modal-sheet { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════════════ ONBOARDING ════════════════════ -->
+<div id="onboarding">
+    <div style="font-size:60px;margin-bottom:12px">📈</div>
+    <h1 id="ob-title">בורסת הילדים</h1>
+    <p class="sub" id="ob-sub">בחר אווטאר ושם – ונתחיל!</p>
+
+    <div class="avatar-grid" id="avatarGrid"></div>
+
+    <input class="name-input" id="playerNameInput" maxlength="14">
+
+    <button class="start-btn" onclick="startGame()" id="ob-btn">🚀 בואו נתחיל!</button>
+</div>
+
+<!-- ════════════════════ MAIN APP ════════════════════ -->
+<div class="container" id="mainApp" style="display:none">
+
+    <!-- LANG BAR -->
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="setLang('he')" id="btn-he">🇮🇱 עברית</button>
+        <span class="lang-divider">|</span>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">🇺🇸 English</button>
+        <span class="lang-divider">|</span>
+        <button class="lang-btn" onclick="setLang('ar')" id="btn-ar">🇸🇦 العربية</button>
+        <span class="lang-divider">|</span>
+        <button class="lang-btn" onclick="setLang('ru')" id="btn-ru">🇷🇺 Русский</button>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-top">
+            <div class="player-info">
+                <div class="player-avatar" id="playerAvatarDisp"></div>
+                <div>
+                    <div class="player-name" id="playerNameDisp"></div>
+                    <div class="player-level" id="playerLevelDisp"></div>
+                </div>
+            </div>
+            <div class="market-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">שוק פתוח</span>
+            </div>
+        </div>
+
+        <div class="balance-row">
+            <div class="balance-info">
+                <div class="label" id="lblCash">מזומן זמין</div>
+                <div class="balance-amount" id="balance">₪100,000</div>
+            </div>
+            <div class="profit-loss pos" id="profitLoss">+₪0 (0%)</div>
+        </div>
+
+        <div class="xp-row">
+            <span class="xp-label" id="xpLabel">XP: 0 / 100</span>
+            <div class="xp-bar-bg">
+                <div class="xp-bar-fill" id="xpBar" style="width:0%"></div>
+            </div>
+        </div>
+
+        <div class="session-badge">
+            <div>
+                <div class="code-label" id="lblGameCode">קוד המשחק שלך</div>
+                <div class="code-value" id="sessionCode">----</div>
+            </div>
+            <button class="connect-btn" onclick="openConnectModal()" id="btnPlayWithFriend">👥 שחק עם חבר</button>
+        </div>
+
+        <div class="badges-row" id="badgesRow"></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('market',this)" id="tabMarket">🏪 שוק</button>
+        <button class="tab" onclick="showTab('portfolio',this)" id="tabPortfolio">💼 תיק</button>
+        <button class="tab" onclick="showTab('leaderboard',this)" id="tabLeaderboard">🏆 ליגה</button>
+        <button class="tab" onclick="showTab('future',this)" id="tabFuture">⏳ עתיד</button>
+        <button class="tab" onclick="showTab('learn',this)" id="tabLearn">📚 למד</button>
+    </div>
+
+    <div class="content">
+
+        <!-- MARKET -->
+        <div id="market" class="tab-content">
+            <div class="event-banner" id="eventBanner"></div>
+            <div class="sector-filter" id="sectorFilter"></div>
+            <div id="stockList"></div>
+        </div>
+
+        <!-- PORTFOLIO -->
+        <div id="portfolio" class="tab-content hidden">
+            <div class="portfolio-summary">
+                <div class="summary-card">
+                    <div class="s-label" id="lblPortfolioVal">שווי תיק</div>
+                    <div class="s-value" id="portfolioTotal">₪0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="s-label" id="lblProfitLoss">רווח/הפסד</div>
+                    <div class="s-value" id="portfolioPL">₪0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="s-label" id="lblStocks">מניות</div>
+                    <div class="s-value" id="portfolioCount">0</div>
+                </div>
+            </div>
+            <div id="portfolioList"></div>
+        </div>
+
+        <!-- LEADERBOARD -->
+        <div id="leaderboard" class="tab-content hidden">
+            <div id="leaderboardList"></div>
+        </div>
+
+        <!-- FUTURE CALCULATOR -->
+        <div id="future" class="tab-content hidden">
+            <div class="calc-card">
+                <h3 id="calcTitle">⏳ מחשבון העתיד</h3>
+                <div class="calc-row">
+                    <div>
+                        <div class="calc-label" id="calcLblMonthly">השקעה חודשית</div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                            <span>₪50</span><strong id="calcMonthlyVal" style="color:var(--gold)">₪200</strong><span>₪1,000</span>
+                        </div>
+                        <input type="range" class="calc-slider" id="sliderMonthly" min="50" max="1000" step="50" value="200" oninput="updateCalc()">
+                    </div>
+                    <div>
+                        <div class="calc-label" id="calcLblYears">מספר שנים</div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                            <span>5</span><strong id="calcYearsVal" style="color:var(--gold)">20</strong><span>40</span>
+                        </div>
+                        <input type="range" class="calc-slider" id="sliderYears" min="5" max="40" step="1" value="20" oninput="updateCalc()">
+                    </div>
+                    <div>
+                        <div class="calc-label" id="calcLblReturn">תשואה שנתית ממוצעת</div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                            <span>4%</span><strong id="calcReturnVal" style="color:var(--gold)">8%</strong><span>15%</span>
+                        </div>
+                        <input type="range" class="calc-slider" id="sliderReturn" min="4" max="15" step="0.5" value="8" oninput="updateCalc()">
+                    </div>
+                </div>
+                <div class="calc-result">
+                    <div class="snowball" id="calcSnowball">⛄</div>
+                    <div class="calc-big" id="calcResult">₪0</div>
+                    <div class="calc-small" id="calcSub">מתוך השקעה של ₪0</div>
+                    <div style="font-size:11px;opacity:0.6;margin-top:6px" id="calcProfit"></div>
+                </div>
+            </div>
+            <div class="tutorial" style="margin-top:4px">
+                <h3 id="calcTip1Title">💡 כדור השלג של כסף</h3>
+                <p id="calcTip1Text">ריבית דריבית היא כמו כדור שלג שמתגלגל: ככל שהוא מתגלגל יותר זמן, הוא גדל מהר יותר. כסף שמושקע בגיל 10 שווה הרבה יותר מכסף שמושקע בגיל 30!</p>
+            </div>
+            <div class="tutorial">
+                <h3 id="calcTip2Title">😴 כסף שוכב = כסף שיורד</h3>
+                <p id="calcTip2Text">בגלל אינפלציה, ₪100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.</p>
+            </div>
+        </div>
+
+        <!-- LEARN -->
+        <div id="learn" class="tab-content hidden">
+            <div id="learnContent"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- TRADE MODAL -->
+<div class="modal-overlay" id="tradeModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-stock-header">
+            <div class="modal-icon" id="modalIcon"></div>
+            <div>
+                <div class="modal-stock-name" id="modalName"></div>
+                <div class="modal-stock-desc" id="modalDesc"></div>
+            </div>
+        </div>
+        <div class="price-row">
+            <span style="color:#888;font-size:13px" id="lblCurrentPrice">מחיר נוכחי</span>
+            <span class="big-price" id="modalPrice"></span>
+        </div>
+        <div class="qty-row">
+            <button class="qty-btn" onclick="adjustQty(-1)">−</button>
+            <input type="number" class="qty-input" id="qtyInput" min="1" oninput="updateCost()">
+            <button class="qty-btn" onclick="adjustQty(1)">+</button>
+        </div>
+        <div class="total-cost-row">
+            <span class="label" id="lblTotalCost">עלות כוללת</span>
+            <span class="amount" id="modalTotal">₪0</span>
+        </div>
+        <div class="action-btns">
+            <button class="btn btn-cancel" onclick="closeTradeModal()" id="btnCancel">ביטול</button>
+            <button class="btn btn-buy" id="buyBtn" onclick="executeTrade('buy')">🟢 קנה</button>
+            <button class="btn btn-sell" id="sellBtn" onclick="executeTrade('sell')">🔴 מכור</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONNECT MODAL -->
+<div class="connect-modal-overlay" id="connectModal">
+    <div class="connect-modal">
+        <h2 id="connectTitle">👥 שחק עם חבר</h2>
+        <p class="subtitle" id="connectSubtitle">שתפו קוד ושחקו יחד!</p>
+        <div class="connect-tabs">
+            <button class="connect-tab active" onclick="switchConnectTab('share',this)" id="ctabShare">📤 שתף קוד</button>
+            <button class="connect-tab" onclick="switchConnectTab('join',this)" id="ctabJoin">🔗 הצטרף</button>
+        </div>
+        <div id="shareTab">
+            <div class="my-code-display">
+                <div class="code-hint" id="lblYourCode">הקוד שלך לשיתוף</div>
+                <div class="big-code" id="modalCode">----</div>
+            </div>
+            <p style="color:#888;font-size:12px;margin-bottom:14px" id="shareHint">שלח לחבר, הוא ילחץ "הצטרף" ויכניס את הקוד.</p>
+        </div>
+        <div id="joinTab" class="hidden">
+            <p style="color:#555;font-size:13px;margin-bottom:10px" id="joinHint">הכנס את הקוד של החבר:</p>
+            <input type="text" class="friend-code-input" id="friendCodeInput" placeholder="XXXX" maxlength="4" oninput="this.value=this.value.toUpperCase()">
+            <button class="join-btn" onclick="joinFriend()" id="btnJoin">🚀 התחבר!</button>
+        </div>
+        <button class="close-modal-btn" onclick="closeConnectModal()" id="btnCloseConnect">סגור</button>
+    </div>
+</div>
+
+<!-- ACHIEVEMENT TOAST -->
+<div class="achievement-toast" id="achievementToast"></div>
+<!-- NOTIFICATION -->
+<div class="notification" id="notification"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  TRANSLATIONS
+// ════════════════════════════════════════════════════════
+const T = {
+    he: {
+        dir:'rtl', lang:'he',
+        ob_title:'בורסת הילדים', ob_sub:'בחר אווטאר ושם', ob_btn:'🚀 בואו נתחיל!',
+        ob_placeholder:'השם שלך...',
+        appTitle:'📈 בורסת הילדים',
+        marketOpen:'שוק פתוח', marketNight:'שוק רגוע (לילה)',
+        lblCash:'מזומן זמין', lblGameCode:'קוד המשחק שלך',
+        btnPlayWithFriend:'👥 שחק עם חבר',
+        tabMarket:'🏪 שוק', tabPortfolio:'💼 תיק',
+        tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
+        lblPortfolioVal:'שווי תיק', lblProfitLoss:'רווח/הפסד', lblStocks:'מניות',
+        emptyPortfolio:'התיק שלך ריק<br>קנה את המניה הראשונה שלך!',
+        lblCurrentPrice:'מחיר נוכחי', lblTotalCost:'עלות כוללת',
+        qtyPlaceholder:'כמות', btnCancel:'ביטול', btnBuy:'🟢 קנה', btnSell:'🔴 מכור',
+        connectTitle:'👥 שחק עם חבר', connectSubtitle:'שתפו קוד ושחקו יחד!',
+        ctabShare:'📤 שתף קוד', ctabJoin:'🔗 הצטרף',
+        lblYourCode:'הקוד שלך לשיתוף',
+        shareHint:'שלח לחבר, הוא ילחץ "הצטרף" ויכניס את הקוד.',
+        joinHint:'הכנס את הקוד של החבר:', btnJoin:'🚀 התחבר!', btnCloseConnect:'סגור',
+        errInvalidQty:'הכנס כמות תקינה', errNoMoney:'אין מספיק מזומן! 💸',
+        errNoShares:'אין לך מספיק מניות למכירה',
+        buySuccess:(qty,n)=>`קנית ${qty} מניות של ${n}! 🎉`,
+        sellSuccess:(qty,n)=>`מכרת ${qty} מניות של ${n}`,
+        err4chars:'הכנס קוד בן 4 תווים', errOwnCode:'זה הקוד שלך! הכנס קוד של חבר',
+        connectedMsg:(n)=>`🎉 מחובר לשוק של ${n}!`,
+        friendJoined:(n)=>`👋 ${n} מחובר ומסחר!`,
+        holdingQty:(qty,avg)=>`${qty} מניות · ממוצע ₪${avg}`,
+        levelNames:['משקיע מתחיל','סוחר צעיר','מנהל תיקים','מנתח שוק','גורו בורסה','וורן באפט קטן'],
+        calcTitle:'⏳ מחשבון העתיד',
+        calcLblMonthly:'השקעה חודשית', calcLblYears:'מספר שנים', calcLblReturn:'תשואה שנתית',
+        calcTip1Title:'💡 כדור השלג של כסף',
+        calcTip1Text:'ריבית דריבית היא כמו כדור שלג שמתגלגל: ככל שהוא מתגלגל יותר זמן, הוא גדל מהר יותר. כסף שמושקע בגיל 10 שווה הרבה יותר מכסף שמושקע בגיל 30!',
+        calcTip2Title:'😴 כסף שוכב = כסף שיורד',
+        calcTip2Text:'בגלל אינפלציה, ₪100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.',
+        calcSaved:(t,i)=>`מתוך השקעה של ₪${i.toLocaleString()} • רווח: ₪${(t-i).toLocaleString()}`,
+        lbTitle:'🏆 לוח תוצאות',
+        lbYou:'(אתה)',
+        achievements:{
+            firstBuy:{icon:'🎯',title:'קנייה ראשונה!'},
+            firstSell:{icon:'💰',title:'מכירה ראשונה!'},
+            diversified:{icon:'🌈',title:'משקיע מגוון!'},
+            profit10:{icon:'📈',title:'רווח 10%!'},
+            profit25:{icon:'🚀',title:'רווח 25%!'},
+            fiveStocks:{icon:'🎰',title:'5 מניות!'},
+        },
+        sectors:['הכל','בינה מלאכותית','רובוטיקה','אנרגיה נקייה','עתיד','טכנולוגיה','מסורתיות','בינלאומי'],
+        events:[
+            {text:'🚀 נווידיא הכריזה על שבב AI חדש!',affected:['NVDA','AI','PLTR'],factor:1.08},
+            {text:'⚡ מחיר חשמל ירד – אנרגיה נקייה מזנקת!',affected:['ENPH','PLUG','TSLA'],factor:1.06},
+            {text:'🤖 ממשלת ארה"ב משקיעה ברובוטיקה',affected:['ISRG','ABB','TER'],factor:1.05},
+            {text:'📉 חששות מיתון – שוק יורד',affected:['AAPL','MSFT','AMZN','GOOGL'],factor:0.94},
+            {text:'🎮 רובלוקס שברה שיא משתמשים!',affected:['RBLX','U'],factor:1.12},
+            {text:'☀️ גל חום – אנרגיה סולארית מזנקת',affected:['ENPH','PLUG'],factor:1.1},
+            {text:'💳 ויזא מדווחת על רווח שיא',affected:['V','JPM'],factor:1.04},
+        ],
+        learn:[
+            {icon:'🎯',title:'מה זה מניות?',text:'מניה היא חלק קטן מחברה. כשאתה קונה מניה, אתה הופך לבעלים של חלק קטן! אם החברה מרוויחה – גם אתה מרוויח.'},
+            {icon:'🤖',title:'בינה מלאכותית (AI)',text:'AI זה טכנולוגיה שעוזרת למחשבים לחשוב. חברות כמו נווידיא מייצרות את השבבים שמריצים את ה-AI של כולם.'},
+            {icon:'🦾',title:'רובוטיקה',text:'רובוטים עובדים במפעלים, בבתי חולים ואפילו בחלל. חברות שמייצרות רובוטים נחשבות למניות צמיחה חזקות.'},
+            {icon:'🌱',title:'מניות צמיחה',text:'חברות צעירות וחדשניות שגדלות מהר. הן יכולות לעלות הרבה – אבל גם לרדת! יותר סיכון = יותר הזדמנות.'},
+            {icon:'📊',title:'תנודתיות',text:'כמה מחיר מניה זז. מניה תנודתית יכולה לעלות 20% ביום ולרדת 20% למחרת. מרגש, אבל מסוכן!'},
+            {icon:'🔋',title:'אנרגיה נקייה',text:'אנרגיה מהשמש, הרוח והמים. ממשלות בכל העולם תומכות בחברות אלו.'},
+            {icon:'💰',title:'מושגים חשובים',text:'<b>פורטפוליו</b> – כל המניות שלך<br><b>גיוון</b> – לפזר בין תחומים<br><b>דיבידנד</b> – חלוקת רווח<br><b>ריבית דריבית</b> – רווח על הרווח'},
+            {icon:'💡',title:'טיפים חכמים',text:'• פזר בין תחומים שונים<br>• אל תשקיע יותר ממה שאתה מוכן להפסיד<br>• חשוב לטווח ארוך<br>• עקוב אחרי חדשות השוק'},
+        ],
+        stockDescs:{
+            AAPL:'יוצרת אייפון, אייפד ומק',GOOGL:'מנוע החיפוש ויוטיוב',MSFT:'ווינדוס, אקסל ואקסבוקס',
+            META:'פייסבוק, אינסטגרם, ווטסאפ',NFLX:'סרטים וסדרות באינטרנט',
+            NVDA:'שבבי AI – הלב של הבינה המלאכותית',PLTR:'ניתוח נתונים עם AI',AI:'פלטפורמת AI לעסקים',
+            ISRG:'רובוטים לניתוחים רפואיים',ABB:'רובוטים תעשייתיים',TER:'רובוטים לבדיקת שבבים',
+            TSLA:'מכוניות חשמליות ואנרגיה',ENPH:'מערכות אנרגיה סולארית',PLUG:'תאי דלק מימן',
+            RBLX:'משחקים ומטאוורס לילדים',COIN:'מסחר במטבעות דיגיטליים',
+            AMZN:'קניות אינטרנט ושירותי ענן',DIS:'סרטי אנימציה ופארקי שעשועים',
+            MCD:'רשת ההמבורגרים הגדולה',KO:'משקאות קלים ברחבי העולם',
+            NKE:'נעלי ספורט ובגדי ספורט',V:'כרטיסי אשראי ותשלומים',
+            JPM:'אחד הבנקים הגדולים בעולם',TSM:'יצרנית השבבים הגדולה',ASML:'מכונות לייצור שבבים',
+        }
+    },
+    en: {
+        dir:'ltr', lang:'en',
+        ob_title:'Kids Stock Market', ob_sub:'Pick an avatar and name', ob_btn:'🚀 Let\'s Start!',
+        ob_placeholder:'Your name...',
+        appTitle:'📈 Kids Stock Market',
+        marketOpen:'Market Open', marketNight:'Market Quiet (Night)',
+        lblCash:'Available Cash', lblGameCode:'Your Game Code',
+        btnPlayWithFriend:'👥 Play with Friend',
+        tabMarket:'🏪 Market', tabPortfolio:'💼 Portfolio',
+        tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
+        lblPortfolioVal:'Portfolio Value', lblProfitLoss:'Profit / Loss', lblStocks:'Stocks',
+        emptyPortfolio:'Your portfolio is empty<br>Buy your first stock!',
+        lblCurrentPrice:'Current Price', lblTotalCost:'Total Cost',
+        qtyPlaceholder:'Quantity', btnCancel:'Cancel', btnBuy:'🟢 Buy', btnSell:'🔴 Sell',
+        connectTitle:'👥 Play with a Friend', connectSubtitle:'Share a code and trade together!',
+        ctabShare:'📤 Share Code', ctabJoin:'🔗 Join',
+        lblYourCode:'Your code to share',
+        shareHint:'Send this to your friend. They tap "Join" and enter the code.',
+        joinHint:'Enter your friend\'s code:', btnJoin:'🚀 Connect!', btnCloseConnect:'Close',
+        errInvalidQty:'Please enter a valid quantity', errNoMoney:'Not enough cash! 💸',
+        errNoShares:'You don\'t have enough shares to sell',
+        buySuccess:(qty,n)=>`You bought ${qty} shares of ${n}! 🎉`,
+        sellSuccess:(qty,n)=>`You sold ${qty} shares of ${n}`,
+        err4chars:'Enter a 4-character code', errOwnCode:'That\'s your code! Enter a friend\'s code',
+        connectedMsg:(n)=>`🎉 Connected to ${n}'s market!`,
+        friendJoined:(n)=>`👋 ${n} is connected and trading!`,
+        holdingQty:(qty,avg)=>`${qty} shares · avg ₪${avg}`,
+        levelNames:['Beginner','Young Trader','Portfolio Manager','Market Analyst','Guru','Little Buffett'],
+        calcTitle:'⏳ Future Calculator',
+        calcLblMonthly:'Monthly Investment', calcLblYears:'Number of Years', calcLblReturn:'Annual Return',
+        calcTip1Title:'💡 The Money Snowball',
+        calcTip1Text:'Compound interest is like a snowball rolling downhill: the longer it rolls, the bigger it grows. Money invested at age 10 is worth much more than money invested at 30!',
+        calcTip2Title:'😴 Idle Money = Shrinking Money',
+        calcTip2Text:'Because of inflation, ₪100 today buys less in the future. If money isn\'t invested, it loses value silently.',
+        calcSaved:(t,i)=>`From an investment of ₪${i.toLocaleString()} • Profit: ₪${(t-i).toLocaleString()}`,
+        lbTitle:'🏆 Leaderboard', lbYou:'(you)',
+        achievements:{
+            firstBuy:{icon:'🎯',title:'First Buy!'},
+            firstSell:{icon:'💰',title:'First Sell!'},
+            diversified:{icon:'🌈',title:'Diversified!'},
+            profit10:{icon:'📈',title:'10% Profit!'},
+            profit25:{icon:'🚀',title:'25% Profit!'},
+            fiveStocks:{icon:'🎰',title:'5 Stocks!'},
+        },
+        sectors:['All','AI','Robotics','Clean Energy','Future','Technology','Traditional','International'],
+        events:[
+            {text:'🚀 Nvidia announces new AI chip!',affected:['NVDA','AI','PLTR'],factor:1.08},
+            {text:'⚡ Energy prices drop – clean energy surges!',affected:['ENPH','PLUG','TSLA'],factor:1.06},
+            {text:'🤖 US government invests in robotics',affected:['ISRG','ABB','TER'],factor:1.05},
+            {text:'📉 Recession fears – market drops',affected:['AAPL','MSFT','AMZN','GOOGL'],factor:0.94},
+            {text:'🎮 Roblox breaks user record!',affected:['RBLX','U'],factor:1.12},
+            {text:'☀️ Heat wave – solar energy surges',affected:['ENPH','PLUG'],factor:1.1},
+            {text:'💳 Visa reports record profit',affected:['V','JPM'],factor:1.04},
+        ],
+        learn:[
+            {icon:'🎯',title:'What are Stocks?',text:"A stock is a tiny piece of a company. When you buy a stock, you become a part-owner! If the company earns money – so do you."},
+            {icon:'🤖',title:'Artificial Intelligence',text:'AI helps computers think and learn. Companies like Nvidia make the chips that power AI.'},
+            {icon:'🦾',title:'Robotics',text:'Robots work in factories, hospitals, and even space. Robotics companies are powerful growth stocks.'},
+            {icon:'🌱',title:'Growth Stocks',text:'Young innovative companies growing fast. They can rise a lot – but also fall! More risk = more opportunity.'},
+            {icon:'📊',title:'Volatility',text:'How much a stock price moves. A volatile stock can jump 20% one day and drop 20% the next. Exciting but risky!'},
+            {icon:'💰',title:'Key Terms',text:'<b>Portfolio</b> – all your stocks<br><b>Diversification</b> – spread across sectors<br><b>Dividend</b> – profit sharing<br><b>Compound interest</b> – profit on your profit'},
+            {icon:'💡',title:'Smart Tips',text:'• Spread across different sectors<br>• Never invest more than you can lose<br>• Think long-term<br>• Follow market news'},
+        ],
+        stockDescs:{
+            AAPL:'Makes iPhone, iPad & Mac',GOOGL:'Search engine & YouTube',MSFT:'Windows, Excel & Xbox',
+            META:'Facebook, Instagram, WhatsApp',NFLX:'Movies & series online',
+            NVDA:'AI chips – the heart of artificial intelligence',PLTR:'AI data analysis for governments',AI:'AI platform for businesses',
+            ISRG:'Robots for medical surgery',ABB:'Industrial robots',TER:'Robots for chip testing',
+            TSLA:'Electric cars & energy',ENPH:'Solar energy systems',PLUG:'Hydrogen fuel cells',
+            RBLX:'Games & metaverse for kids',COIN:'Digital currency trading',
+            AMZN:'Online shopping & cloud services',DIS:'Animated movies & theme parks',
+            MCD:"World's largest burger chain",KO:'Soft drinks worldwide',
+            NKE:'Sports shoes & clothing',V:'Credit cards & payments',
+            JPM:"One of the world's largest banks",TSM:"World's largest chip maker",ASML:'Chip manufacturing machines',
+        }
+    },
+    ar: {
+        dir:'rtl', lang:'ar',
+        ob_title:'سوق الأسهم للأطفال', ob_sub:'اختر صورة رمزية واسماً', ob_btn:'🚀 لنبدأ!',
+        ob_placeholder:'اسمك...',
+        appTitle:'📈 سوق الأسهم للأطفال',
+        marketOpen:'السوق مفتوح', marketNight:'السوق هادئ (الليل)',
+        lblCash:'النقد المتاح', lblGameCode:'رمز لعبتك',
+        btnPlayWithFriend:'👥 العب مع صديق',
+        tabMarket:'🏪 السوق', tabPortfolio:'💼 المحفظة',
+        tabLeaderboard:'🏆 الترتيب', tabFuture:'⏳ المستقبل', tabLearn:'📚 تعلّم',
+        lblPortfolioVal:'قيمة المحفظة', lblProfitLoss:'الربح/الخسارة', lblStocks:'الأسهم',
+        emptyPortfolio:'محفظتك فارغة<br>اشتر سهمك الأول!',
+        lblCurrentPrice:'السعر الحالي', lblTotalCost:'التكلفة الإجمالية',
+        qtyPlaceholder:'الكمية', btnCancel:'إلغاء', btnBuy:'🟢 شراء', btnSell:'🔴 بيع',
+        connectTitle:'👥 العب مع صديق', connectSubtitle:'شاركوا الرمز والعبوا معاً!',
+        ctabShare:'📤 شارك الرمز', ctabJoin:'🔗 انضم',
+        lblYourCode:'رمزك للمشاركة',
+        shareHint:'أرسل الرمز لصديقك، يختار "انضم" ويدخله.',
+        joinHint:'أدخل رمز صديقك:', btnJoin:'🚀 تواصل!', btnCloseConnect:'إغلاق',
+        errInvalidQty:'أدخل كمية صحيحة', errNoMoney:'ليس لديك نقود كافية! 💸',
+        errNoShares:'ليس لديك أسهم كافية للبيع',
+        buySuccess:(qty,n)=>`اشتريت ${qty} أسهم من ${n}! 🎉`,
+        sellSuccess:(qty,n)=>`بعت ${qty} أسهم من ${n}`,
+        err4chars:'أدخل رمزاً من 4 أحرف', errOwnCode:'هذا رمزك! أدخل رمز صديق',
+        connectedMsg:(n)=>`🎉 متصل بسوق ${n}!`,
+        friendJoined:(n)=>`👋 ${n} متصل ويتداول!`,
+        holdingQty:(qty,avg)=>`${qty} أسهم · متوسط ₪${avg}`,
+        levelNames:['مبتدئ','تاجر صغير','مدير محفظة','محلل سوق','خبير','وارن بافيت صغير'],
+        calcTitle:'⏳ حاسبة المستقبل',
+        calcLblMonthly:'الاستثمار الشهري', calcLblYears:'عدد السنوات', calcLblReturn:'العائد السنوي',
+        calcTip1Title:'💡 كرة الثلج المالية',
+        calcTip1Text:'الفائدة المركبة مثل كرة ثلج تتدحرج: كلما تدحرجت أطول، كبرت أسرع. المال المستثمر في سن 10 يساوي أكثر بكثير من المال المستثمر في سن 30!',
+        calcTip2Title:'😴 المال الخامل = مال ينقص',
+        calcTip2Text:'بسبب التضخم، 100₪ اليوم تشتري أقل في المستقبل. إذا لم يُستثمر المال، يفقد قيمته دون أن تشعر.',
+        calcSaved:(t,i)=>`من استثمار ₪${i.toLocaleString()} • الربح: ₪${(t-i).toLocaleString()}`,
+        lbTitle:'🏆 لوح الصدارة', lbYou:'(أنت)',
+        achievements:{
+            firstBuy:{icon:'🎯',title:'أول شراء!'},
+            firstSell:{icon:'💰',title:'أول بيع!'},
+            diversified:{icon:'🌈',title:'محفظة متنوعة!'},
+            profit10:{icon:'📈',title:'ربح 10%!'},
+            profit25:{icon:'🚀',title:'ربح 25%!'},
+            fiveStocks:{icon:'🎰',title:'5 أسهم!'},
+        },
+        sectors:['الكل','الذكاء الاصطناعي','الروبوتات','الطاقة النظيفة','المستقبل','التكنولوجيا','التقليدية','الدولي'],
+        events:[
+            {text:'🚀 Nvidia تعلن عن شريحة AI جديدة!',affected:['NVDA','AI','PLTR'],factor:1.08},
+            {text:'⚡ أسعار الطاقة تنخفض – الطاقة النظيفة ترتفع!',affected:['ENPH','PLUG','TSLA'],factor:1.06},
+            {text:'📉 مخاوف من الركود – السوق ينخفض',affected:['AAPL','MSFT','AMZN','GOOGL'],factor:0.94},
+            {text:'🎮 Roblox تكسر رقماً قياسياً!',affected:['RBLX','U'],factor:1.12},
+        ],
+        learn:[
+            {icon:'🎯',title:'ما هي الأسهم؟',text:'السهم جزء صغير من شركة. عندما تشتري سهماً تصبح مالكاً جزئياً! إذا ربحت الشركة – أنت تربح أيضاً.'},
+            {icon:'🤖',title:'الذكاء الاصطناعي',text:'الذكاء الاصطناعي يساعد الحواسيب على التفكير. شركات مثل Nvidia تصنع الشرائح التي تشغّله.'},
+            {icon:'💰',title:'مصطلحات مهمة',text:'<b>المحفظة</b> – كل أسهمك<br><b>التنويع</b> – التوزيع بين القطاعات<br><b>الأرباح الموزّعة</b> – توزيع الأرباح'},
+            {icon:'💡',title:'نصائح ذكية',text:'• وزّع بين قطاعات مختلفة<br>• لا تستثمر أكثر مما تستطيع خسارته<br>• فكّر على المدى البعيد'},
+        ],
+        stockDescs:{
+            AAPL:'صانعة iPhone وiPad وMac',GOOGL:'محرك البحث ويوتيوب',MSFT:'ويندوز وإكسل وإكس بوكس',
+            META:'فيسبوك وإنستغرام وواتساب',NFLX:'أفلام ومسلسلات عبر الإنترنت',
+            NVDA:'شرائح AI – قلب الذكاء الاصطناعي',TSLA:'سيارات كهربائية وطاقة',
+            AMZN:'تسوق عبر الإنترنت وخدمات السحابة',DIS:'أفلام الرسوم المتحركة وحدائق الترفيه',
+            MCD:'أكبر سلسلة برغر في العالم',KO:'مشروبات غازية حول العالم',
+            NKE:'أحذية رياضية وملابس رياضية',V:'بطاقات ائتمان ومدفوعات',
+        }
+    },
+    ru: {
+        dir:'ltr', lang:'ru',
+        ob_title:'Биржа для детей', ob_sub:'Выбери аватар и имя', ob_btn:'🚀 Начнём!',
+        ob_placeholder:'Твоё имя...',
+        appTitle:'📈 Биржа для детей',
+        marketOpen:'Рынок открыт', marketNight:'Рынок спокоен (ночь)',
+        lblCash:'Доступные средства', lblGameCode:'Код игры',
+        btnPlayWithFriend:'👥 Играть с другом',
+        tabMarket:'🏪 Рынок', tabPortfolio:'💼 Портфель',
+        tabLeaderboard:'🏆 Рейтинг', tabFuture:'⏳ Будущее', tabLearn:'📚 Учиться',
+        lblPortfolioVal:'Стоимость портфеля', lblProfitLoss:'Прибыль/Убыток', lblStocks:'Акции',
+        emptyPortfolio:'Портфель пуст<br>Купи свою первую акцию!',
+        lblCurrentPrice:'Текущая цена', lblTotalCost:'Общая стоимость',
+        qtyPlaceholder:'Количество', btnCancel:'Отмена', btnBuy:'🟢 Купить', btnSell:'🔴 Продать',
+        connectTitle:'👥 Играть с другом', connectSubtitle:'Поделитесь кодом и торгуйте вместе!',
+        ctabShare:'📤 Поделиться', ctabJoin:'🔗 Войти',
+        lblYourCode:'Ваш код для передачи',
+        shareHint:'Отправьте другу. Он нажимает "Войти" и вводит код.',
+        joinHint:'Введите код друга:', btnJoin:'🚀 Подключиться!', btnCloseConnect:'Закрыть',
+        errInvalidQty:'Введите корректное количество', errNoMoney:'Недостаточно средств! 💸',
+        errNoShares:'Недостаточно акций для продажи',
+        buySuccess:(qty,n)=>`Вы купили ${qty} акций ${n}! 🎉`,
+        sellSuccess:(qty,n)=>`Вы продали ${qty} акций ${n}`,
+        err4chars:'Введите код из 4 символов', errOwnCode:'Это ваш код! Введите код друга',
+        connectedMsg:(n)=>`🎉 Подключён к рынку ${n}!`,
+        friendJoined:(n)=>`👋 ${n} подключён и торгует!`,
+        holdingQty:(qty,avg)=>`${qty} акций · среднее ₪${avg}`,
+        levelNames:['Новичок','Молодой трейдер','Менеджер','Аналитик','Гуру','Мини-Баффет'],
+        calcTitle:'⏳ Калькулятор будущего',
+        calcLblMonthly:'Ежемесячные вложения', calcLblYears:'Количество лет', calcLblReturn:'Годовая доходность',
+        calcTip1Title:'💡 Снежный ком денег',
+        calcTip1Text:'Сложный процент — это снежный ком: чем дольше катится, тем быстрее растёт. Деньги, вложенные в 10 лет, стоят намного больше, чем в 30!',
+        calcTip2Title:'😴 Лежачие деньги = уменьшающиеся деньги',
+        calcTip2Text:'Из-за инфляции ₪100 сегодня покупают меньше в будущем. Если деньги не инвестировать, они теряют ценность незаметно.',
+        calcSaved:(t,i)=>`Из вложений ₪${i.toLocaleString()} • Прибыль: ₪${(t-i).toLocaleString()}`,
+        lbTitle:'🏆 Таблица лидеров', lbYou:'(вы)',
+        achievements:{
+            firstBuy:{icon:'🎯',title:'Первая покупка!'},
+            firstSell:{icon:'💰',title:'Первая продажа!'},
+            diversified:{icon:'🌈',title:'Диверсифицирован!'},
+            profit10:{icon:'📈',title:'Прибыль 10%!'},
+            profit25:{icon:'🚀',title:'Прибыль 25%!'},
+            fiveStocks:{icon:'🎰',title:'5 акций!'},
+        },
+        sectors:['Все','ИИ','Роботы','Чистая энергия','Будущее','Технологии','Традиционные','Международные'],
+        events:[
+            {text:'🚀 Nvidia анонсировала новый чип AI!',affected:['NVDA','AI','PLTR'],factor:1.08},
+            {text:'⚡ Цены на энергию упали – чистая энергия растёт!',affected:['ENPH','PLUG','TSLA'],factor:1.06},
+            {text:'📉 Страхи рецессии – рынок падает',affected:['AAPL','MSFT','AMZN','GOOGL'],factor:0.94},
+            {text:'🎮 Roblox побила рекорд!',affected:['RBLX','U'],factor:1.12},
+        ],
+        learn:[
+            {icon:'🎯',title:'Что такое акции?',text:'Акция — маленькая часть компании. Покупая акцию, вы становитесь совладельцем! Компания зарабатывает — зарабатываете и вы.'},
+            {icon:'🤖',title:'Искусственный интеллект',text:'ИИ помогает компьютерам думать. Nvidia производит чипы для ИИ.'},
+            {icon:'💰',title:'Ключевые термины',text:'<b>Портфель</b> – все ваши акции<br><b>Диверсификация</b> – распределение по секторам<br><b>Дивиденды</b> – выплата прибыли'},
+            {icon:'💡',title:'Умные советы',text:'• Распределяйте по секторам<br>• Не инвестируйте больше допустимого<br>• Думайте долгосрочно'},
+        ],
+        stockDescs:{
+            AAPL:'Производит iPhone, iPad и Mac',GOOGL:'Поисковик и YouTube',MSFT:'Windows, Excel и Xbox',
+            META:'Facebook, Instagram, WhatsApp',NFLX:'Фильмы и сериалы онлайн',
+            NVDA:'Чипы AI – сердце искусственного интеллекта',TSLA:'Электромобили и энергия',
+            AMZN:'Интернет-магазин и облако',DIS:'Мультфильмы и парки',
+            MCD:'Крупнейшая сеть бургеров',KO:'Напитки по всему миру',
+            NKE:'Спортивная обувь и одежда',V:'Кредитные карты и платежи',
+        }
+    }
+};
+
+// ════════════════════════════════════════════════════════
+//  AVATARS
+// ════════════════════════════════════════════════════════
+const AVATARS = ['🦁','🐯','🦊','🐻','🐼','🐸','🦋','🦄','🐉','🦅','🦈','🐬'];
+
+// ════════════════════════════════════════════════════════
+//  STOCKS BASE DATA
+// ════════════════════════════════════════════════════════
+const stocksBase = [
+  {symbol:'AAPL',name:'Apple',icon:'🍎',sector_idx:5,price:185,vol:0.018},
+  {symbol:'GOOGL',name:'Google',icon:'🔍',sector_idx:5,price:140,vol:0.02},
+  {symbol:'MSFT',name:'Microsoft',icon:'🪟',sector_idx:5,price:310,vol:0.016},
+  {symbol:'META',name:'Meta',icon:'👓',sector_idx:5,price:200,vol:0.025},
+  {symbol:'NFLX',name:'Netflix',icon:'🎬',sector_idx:5,price:450,vol:0.03},
+  {symbol:'NVDA',name:'Nvidia',icon:'🤖',sector_idx:1,price:480,vol:0.05},
+  {symbol:'PLTR',name:'Palantir',icon:'🧠',sector_idx:1,price:18,vol:0.065},
+  {symbol:'AI',name:'C3.ai',icon:'💡',sector_idx:1,price:25,vol:0.07},
+  {symbol:'ISRG',name:'Intuitive',icon:'🦾',sector_idx:2,price:320,vol:0.03},
+  {symbol:'ABB',name:'ABB',icon:'🏭',sector_idx:2,price:28,vol:0.025},
+  {symbol:'TER',name:'Teradyne',icon:'🔬',sector_idx:2,price:110,vol:0.035},
+  {symbol:'TSLA',name:'Tesla',icon:'⚡',sector_idx:3,price:800,vol:0.055},
+  {symbol:'ENPH',name:'Enphase',icon:'☀️',sector_idx:3,price:125,vol:0.05},
+  {symbol:'PLUG',name:'Plug Power',icon:'💧',sector_idx:3,price:12,vol:0.08},
+  {symbol:'RBLX',name:'Roblox',icon:'🎮',sector_idx:4,price:45,vol:0.055},
+  {symbol:'COIN',name:'Coinbase',icon:'₿',sector_idx:4,price:68,vol:0.07},
+  {symbol:'AMZN',name:'Amazon',icon:'📦',sector_idx:6,price:178,vol:0.022},
+  {symbol:'DIS',name:'Disney',icon:'🏰',sector_idx:6,price:95,vol:0.02},
+  {symbol:'MCD',name:"McDonald's",icon:'🍔',sector_idx:6,price:275,vol:0.012},
+  {symbol:'KO',name:'Coca-Cola',icon:'🥤',sector_idx:6,price:58,vol:0.01},
+  {symbol:'NKE',name:'Nike',icon:'👟',sector_idx:6,price:105,vol:0.022},
+  {symbol:'V',name:'Visa',icon:'💳',sector_idx:6,price:210,vol:0.014},
+  {symbol:'JPM',name:'JP Morgan',icon:'🏦',sector_idx:6,price:155,vol:0.016},
+  {symbol:'TSM',name:'TSMC',icon:'🔧',sector_idx:7,price:92,vol:0.03},
+  {symbol:'ASML',name:'ASML',icon:'🔭',sector_idx:7,price:680,vol:0.025},
+];
+
+// ════════════════════════════════════════════════════════
+//  FAKE LEADERBOARD OPPONENTS
+// ════════════════════════════════════════════════════════
+const FAKE_PLAYERS = [
+  {name:'Mia 🦊', avatar:'🦊', totalValue:108500},
+  {name:'Ori 🐯', avatar:'🐯', totalValue:103200},
+  {name:'Tamar 🦋', avatar:'🦋', totalValue: 98000},
+  {name:'Yoav 🐉', avatar:'🐉', totalValue: 95500},
+];
+
+// ════════════════════════════════════════════════════════
+//  RUNTIME STATE
+// ════════════════════════════════════════════════════════
+let stocks = stocksBase.map(s => ({...s, change:0}));
+const priceHistory = {};
+stocks.forEach(s => { priceHistory[s.symbol] = [s.price]; });
+
+let balance = 100000;
+let portfolio = {};
+let currentStock = null;
+let activeSectorIdx = 0;
+let sessionCode = generateCode();
+let connectedPlayers = [];
+let currentLang = 'he';
+let playerName = '';
+let playerAvatar = '🦁';
+let selectedAvatarIdx = 0;
+let xp = 0;
+let earnedBadges = {};
+
+// ════════════════════════════════════════════════════════
+//  PERSISTENCE (localStorage)
+// ════════════════════════════════════════════════════════
+function saveState() {
+    const state = {balance, portfolio, xp, earnedBadges,
+        playerName, playerAvatar, currentLang,
+        stocks: stocks.map(s => ({symbol:s.symbol, price:s.price}))
+    };
+    try { localStorage.setItem('borsa_kids_v2', JSON.stringify(state)); } catch(e){}
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem('borsa_kids_v2');
+        if (!raw) return false;
+        const s = JSON.parse(raw);
+        balance = s.balance ?? 100000;
+        portfolio = s.portfolio ?? {};
+        xp = s.xp ?? 0;
+        earnedBadges = s.earnedBadges ?? {};
+        playerName = s.playerName ?? '';
+        playerAvatar = s.playerAvatar ?? '🦁';
+        currentLang = s.currentLang ?? 'he';
+        if (s.stocks) {
+            s.stocks.forEach(saved => {
+                const stock = stocks.find(st => st.symbol === saved.symbol);
+                if (stock) { stock.price = saved.price; priceHistory[stock.symbol] = [saved.price]; }
+            });
+        }
+        return !!playerName;
+    } catch(e) { return false; }
+}
+
+// ════════════════════════════════════════════════════════
+//  ONBOARDING
+// ════════════════════════════════════════════════════════
+function renderAvatarGrid() {
+    const grid = document.getElementById('avatarGrid');
+    grid.innerHTML = '';
+    AVATARS.forEach((av, i) => {
+        const el = document.createElement('div');
+        el.className = 'avatar-opt' + (i === selectedAvatarIdx ? ' selected' : '');
+        el.textContent = av;
+        el.onclick = () => {
+            selectedAvatarIdx = i;
+            playerAvatar = av;
+            renderAvatarGrid();
+        };
+        grid.appendChild(el);
+    });
+}
+
+function startGame() {
+    const input = document.getElementById('playerNameInput');
+    const name = input.value.trim();
+    if (!name) { input.focus(); input.style.borderColor='#ff6b6b'; return; }
+    playerName = name;
+    playerAvatar = AVATARS[selectedAvatarIdx];
+    document.getElementById('onboarding').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    setLang(currentLang);
+    saveState();
+}
+
+// ════════════════════════════════════════════════════════
+//  LANGUAGE
+// ════════════════════════════════════════════════════════
+function setLang(lang) {
+    currentLang = lang;
+    const t = T[lang];
+    const html = document.getElementById('htmlRoot');
+    html.setAttribute('lang', t.lang);
+    html.setAttribute('dir', t.dir);
+
+    ['he','en','ar','ru'].forEach(l => {
+        document.getElementById('btn-'+l).classList.toggle('active', l === lang);
+    });
+
+    // onboarding texts
+    document.getElementById('ob-title').textContent = t.ob_title;
+    document.getElementById('ob-sub').textContent = t.ob_sub;
+    document.getElementById('ob-btn').textContent = t.ob_btn;
+    const ni = document.getElementById('playerNameInput');
+    if (ni) ni.placeholder = t.ob_placeholder;
+
+    const ids = ['lblCash','lblGameCode','btnPlayWithFriend','tabMarket','tabPortfolio',
+        'tabLeaderboard','tabFuture','tabLearn','lblPortfolioVal','lblProfitLoss','lblStocks',
+        'lblCurrentPrice','lblTotalCost','btnCancel','connectTitle','connectSubtitle',
+        'ctabShare','ctabJoin','lblYourCode','shareHint','joinHint','btnJoin','btnCloseConnect',
+        'calcTitle','calcLblMonthly','calcLblYears','calcLblReturn',
+        'calcTip1Title','calcTip1Text','calcTip2Title','calcTip2Text'];
+
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && t[id] !== undefined) el.textContent = t[id];
+    });
+
+    document.getElementById('buyBtn').textContent = t.btnBuy;
+    document.getElementById('sellBtn').textContent = t.btnSell;
+    const qi = document.getElementById('qtyInput');
+    if (qi) qi.placeholder = t.qtyPlaceholder;
+
+    // status
+    const hour = new Date().getHours();
+    const statusEl = document.getElementById('statusText');
+    if (statusEl) statusEl.textContent = (hour>=22||hour<8) ? t.marketNight : t.marketOpen;
+
+    updatePlayerUI();
+    renderSectors();
+    renderStocks();
+    renderPortfolio();
+    renderLeaderboard();
+    renderLearn();
+    updateCalc();
+    renderBadges();
+    saveState();
+}
+
+// ════════════════════════════════════════════════════════
+//  PLAYER UI / XP / LEVELS
+// ════════════════════════════════════════════════════════
+function updatePlayerUI() {
+    document.getElementById('playerAvatarDisp').textContent = playerAvatar;
+    document.getElementById('playerNameDisp').textContent = playerName;
+    const levels = T[currentLang].levelNames;
+    const levelIdx = Math.min(Math.floor(xp / 100), levels.length - 1);
+    document.getElementById('playerLevelDisp').textContent = levels[levelIdx];
+    const xpInLevel = xp % 100;
+    document.getElementById('xpLabel').textContent = `XP: ${xpInLevel}/100`;
+    document.getElementById('xpBar').style.width = xpInLevel + '%';
+}
+
+function addXP(amount) {
+    xp += amount;
+    updatePlayerUI();
+}
+
+function renderBadges() {
+    const row = document.getElementById('badgesRow');
+    row.innerHTML = '';
+    Object.keys(earnedBadges).forEach(key => {
+        const b = T[currentLang].achievements[key];
+        if (!b) return;
+        const el = document.createElement('div');
+        el.className = 'badge';
+        el.textContent = b.icon;
+        el.title = b.title;
+        row.appendChild(el);
+    });
+}
+
+function awardBadge(key) {
+    if (earnedBadges[key]) return;
+    earnedBadges[key] = true;
+    const b = T[currentLang].achievements[key];
+    if (b) showAchievement(`${b.icon} ${b.title}`);
+    renderBadges();
+}
+
+function showAchievement(msg) {
+    const el = document.getElementById('achievementToast');
+    el.textContent = '🏅 ' + msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+function t() { return T[currentLang]; }
+function desc(sym) { return t().stockDescs[sym] || sym; }
+function generateCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+    return code;
+}
+
+// ════════════════════════════════════════════════════════
+//  MARKET SIM
+// ════════════════════════════════════════════════════════
+function marketTick() {
+    const hour = new Date().getHours();
+    const night = hour>=22||hour<8;
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    if (statusDot) statusDot.className = 'status-dot' + (night ? ' closed' : '');
+    if (statusText) statusText.textContent = night ? t().marketNight : t().marketOpen;
+
+    stocks.forEach(stock => {
+        const vol = night ? stock.vol*0.3 : stock.vol;
+        const pct = (Math.random()-0.498)*2*vol;
+        const newP = Math.max(0.5, stock.price*(1+pct));
+        stock.change = newP - stock.price;
+        stock.price = newP;
+        priceHistory[stock.symbol].push(newP);
+        if (priceHistory[stock.symbol].length > 7) priceHistory[stock.symbol].shift();
+    });
+
+    renderStocks();
+    renderPortfolio();
+    updateHeader();
+    checkProfitBadges();
+    saveState();
+}
+
+function triggerRandomEvent() {
+    const events = t().events;
+    const event = events[Math.floor(Math.random()*events.length)];
+    const banner = document.getElementById('eventBanner');
+    if (banner) {
+        banner.textContent = event.text;
+        banner.style.display = 'block';
+        setTimeout(() => { banner.style.display='none'; }, 8000);
+    }
+    event.affected.forEach(sym => {
+        const stock = stocks.find(s => s.symbol===sym);
+        if (stock) {
+            const old = stock.price;
+            stock.price *= event.factor;
+            stock.change = stock.price - old;
+            priceHistory[sym].push(stock.price);
+            if (priceHistory[sym].length>7) priceHistory[sym].shift();
+        }
+    });
+    renderStocks(); renderPortfolio(); updateHeader();
+}
+
+function checkProfitBadges() {
+    const totalVal = getTotalValue();
+    const pl = totalVal - 100000;
+    const pct = (pl/100000)*100;
+    if (pct >= 10) awardBadge('profit10');
+    if (pct >= 25) awardBadge('profit25');
+    if (Object.keys(portfolio).length >= 5) awardBadge('fiveStocks');
+    const sectors = new Set(Object.keys(portfolio).map(sym => {
+        const s = stocks.find(st=>st.symbol===sym);
+        return s ? s.sector_idx : -1;
+    }));
+    if (sectors.size >= 3) awardBadge('diversified');
+}
+
+function getTotalValue() {
+    let v = balance;
+    Object.keys(portfolio).forEach(sym => {
+        const h = portfolio[sym];
+        const s = stocks.find(st=>st.symbol===sym);
+        if (s) v += h.qty * s.price;
+    });
+    return v;
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════
+function renderSectors() {
+    const container = document.getElementById('sectorFilter');
+    if (!container) return;
+    container.innerHTML = '';
+    t().sectors.forEach((name, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'sector-btn' + (idx===activeSectorIdx ? ' active' : '');
+        btn.textContent = name;
+        btn.onclick = () => { activeSectorIdx=idx; renderSectors(); renderStocks(); };
+        container.appendChild(btn);
+    });
+}
+
+function renderStocks() {
+    const list = document.getElementById('stockList');
+    if (!list) return;
+    const filtered = activeSectorIdx===0 ? stocks : stocks.filter(s=>s.sector_idx===activeSectorIdx);
+    list.innerHTML = '';
+    filtered.forEach(stock => {
+        const up = stock.change >= 0;
+        const base = stock.price - stock.change;
+        const pct = base>0 ? ((stock.change/base)*100).toFixed(2) : '0.00';
+        const hist = priceHistory[stock.symbol];
+        const minH = Math.min(...hist), maxH = Math.max(...hist);
+        const bars = hist.map(p => {
+            const h = maxH===minH ? 10 : Math.round(3+((p-minH)/(maxH-minH))*14);
+            return `<div class="mini-bar" style="height:${h}px;background:${up?'#28a745':'#dc3545'}"></div>`;
+        }).join('');
+
+        const el = document.createElement('div');
+        el.className = 'stock-item';
+        el.onclick = () => openTradeModal(stock);
+        el.innerHTML = `
+          <div class="stock-left">
+            <div class="stock-icon" style="background:${up?'#e8f5e9':'#fce4e4'}">${stock.icon}</div>
+            <div class="stock-info">
+              <div class="stock-name">${stock.name} <span style="font-size:10px;color:#aaa">${stock.symbol}</span></div>
+              <div class="stock-desc">${desc(stock.symbol)}</div>
+            </div>
+          </div>
+          <div class="stock-right">
+            <div class="price">₪${stock.price.toFixed(2)}</div>
+            <div class="mini-chart">${bars}</div>
+            <div class="change-badge ${up?'positive':'negative'}">${up?'+':''}${pct}%</div>
+          </div>`;
+        list.appendChild(el);
+    });
+}
+
+function renderPortfolio() {
+    const list = document.getElementById('portfolioList');
+    if (!list) return;
+    list.innerHTML = '';
+    const keys = Object.keys(portfolio);
+
+    if (keys.length===0) {
+        list.innerHTML = `<div class="empty-state"><div class="emoji">💼</div><div>${t().emptyPortfolio}</div></div>`;
+        document.getElementById('portfolioTotal').textContent = '₪0';
+        document.getElementById('portfolioPL').textContent = '₪0';
+        document.getElementById('portfolioCount').textContent = '0';
+        return;
+    }
+
+    let totalVal=0, totalInv=0;
+    keys.forEach(sym => {
+        const h = portfolio[sym];
+        const stock = stocks.find(s=>s.symbol===sym);
+        if (!stock) return;
+        const cur = h.qty*stock.price;
+        const inv = h.qty*h.avgPrice;
+        totalVal+=cur; totalInv+=inv;
+        const pl = cur-inv;
+        const plPct = ((pl/inv)*100).toFixed(1);
+        const up = pl>=0;
+        const el = document.createElement('div');
+        el.className = 'portfolio-item';
+        el.onclick = () => openTradeModal(stock);
+        el.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;border-radius:10px;background:${up?'#e8f5e9':'#fce4e4'};display:flex;align-items:center;justify-content:center;font-size:18px">${stock.icon}</div>
+            <div class="holding-info">
+              <div class="holding-name">${stock.name}</div>
+              <div class="holding-qty">${t().holdingQty(h.qty, h.avgPrice.toFixed(2))}</div>
+            </div>
+          </div>
+          <div class="holding-value">
+            <div class="current-value">₪${cur.toFixed(2)}</div>
+            <div class="change-badge ${up?'positive':'negative'}">${up?'+':''}${plPct}%</div>
+          </div>`;
+        list.appendChild(el);
+    });
+
+    const totalPL = totalVal-totalInv;
+    document.getElementById('portfolioTotal').textContent = `₪${totalVal.toFixed(0)}`;
+    document.getElementById('portfolioPL').style.color = totalPL>=0 ? '#28a745' : '#dc3545';
+    document.getElementById('portfolioPL').textContent = `${totalPL>=0?'+':''}₪${totalPL.toFixed(0)}`;
+    document.getElementById('portfolioCount').textContent = keys.length;
+}
+
+function renderLeaderboard() {
+    const list = document.getElementById('leaderboardList');
+    if (!list) return;
+
+    const myTotal = getTotalValue();
+    const all = [
+        {name: playerName + ' ' + playerAvatar, avatar: playerAvatar, totalValue: myTotal, isMe: true},
+        ...FAKE_PLAYERS
+    ].sort((a,b) => b.totalValue - a.totalValue);
+
+    list.innerHTML = `<h3 style="margin-bottom:12px;color:#333">${t().lbTitle}</h3>`;
+    all.forEach((player, i) => {
+        const pl = player.totalValue - 100000;
+        const plPct = ((pl/100000)*100).toFixed(1);
+        const rankClass = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+        const rankIcon = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+        const el = document.createElement('div');
+        el.className = 'leaderboard-item' + (player.isMe ? ' my-row' : '');
+        el.innerHTML = `
+          <div class="rank-badge ${rankClass}">${rankIcon}</div>
+          <div class="lb-player-info">
+            <div class="lb-name">${player.name}${player.isMe?' <span style="font-size:11px;color:var(--accent)">('+t().lbYou+')</span>':''}</div>
+            <div class="lb-sub">₪${Math.round(player.totalValue).toLocaleString()}</div>
+          </div>
+          <div class="lb-value">
+            <div class="${pl>=0?'lb-change-pos':'lb-change-neg'}">${pl>=0?'+':''}${plPct}%</div>
+          </div>`;
+        list.appendChild(el);
+    });
+}
+
+function renderLearn() {
+    const container = document.getElementById('learnContent');
+    if (!container) return;
+    container.innerHTML = '';
+    t().learn.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'tutorial';
+        div.innerHTML = `<h3>${item.icon} ${item.title}</h3><p>${item.text}</p>`;
+        container.appendChild(div);
+    });
+}
+
+function updateHeader() {
+    const balEl = document.getElementById('balance');
+    if (balEl) balEl.textContent = `₪${balance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')}`;
+    const total = getTotalValue();
+    const pl = total - 100000;
+    const plPct = ((pl/100000)*100).toFixed(1);
+    const plEl = document.getElementById('profitLoss');
+    if (plEl) {
+        plEl.className = 'profit-loss ' + (pl>=0?'pos':'neg');
+        plEl.textContent = `${pl>=0?'+':''}₪${Math.abs(pl).toFixed(0)} (${pl>=0?'+':''}${plPct}%)`;
+    }
+}
+
+// ════════════════════════════════════════════════════════
+//  FUTURE CALCULATOR
+// ════════════════════════════════════════════════════════
+function updateCalc() {
+    const monthly = parseFloat(document.getElementById('sliderMonthly').value);
+    const years = parseFloat(document.getElementById('sliderYears').value);
+    const rate = parseFloat(document.getElementById('sliderReturn').value) / 100;
+
+    document.getElementById('calcMonthlyVal').textContent = `₪${monthly}`;
+    document.getElementById('calcYearsVal').textContent = years;
+    document.getElementById('calcReturnVal').textContent = `${(rate*100).toFixed(1)}%`;
+
+    const months = years * 12;
+    const monthRate = rate / 12;
+    const fv = monthly * ((Math.pow(1+monthRate, months)-1) / monthRate) * (1+monthRate);
+    const invested = monthly * months;
+
+    document.getElementById('calcResult').textContent = `₪${Math.round(fv).toLocaleString()}`;
+    document.getElementById('calcSub').textContent = t().calcSaved ? t().calcSaved(Math.round(fv), Math.round(invested)) : '';
+
+    // snowball emoji grows with time
+    const size = Math.min(60, 30 + years);
+    const snowEl = document.getElementById('calcSnowball');
+    if (snowEl) snowEl.style.fontSize = size + 'px';
+}
+
+// ════════════════════════════════════════════════════════
+//  TRADE MODAL
+// ════════════════════════════════════════════════════════
+function openTradeModal(stock) {
+    currentStock = stock;
+    const hasHolding = portfolio[stock.symbol] && portfolio[stock.symbol].qty>0;
+    document.getElementById('modalIcon').textContent = stock.icon;
+    document.getElementById('modalIcon').style.background = '#f0f1ff';
+    document.getElementById('modalName').textContent = stock.name;
+    document.getElementById('modalDesc').textContent = desc(stock.symbol);
+    document.getElementById('modalPrice').textContent = `₪${stock.price.toFixed(2)}`;
+    document.getElementById('qtyInput').value = '';
+    document.getElementById('qtyInput').placeholder = t().qtyPlaceholder;
+    document.getElementById('modalTotal').textContent = '₪0';
+    document.getElementById('sellBtn').style.display = hasHolding ? 'block' : 'none';
+    document.getElementById('tradeModal').classList.add('show');
+}
+
+function closeTradeModal() {
+    document.getElementById('tradeModal').classList.remove('show');
+    currentStock = null;
+}
+
+function adjustQty(delta) {
+    const input = document.getElementById('qtyInput');
+    input.value = Math.max(1, (parseInt(input.value)||0)+delta);
+    updateCost();
+}
+
+function updateCost() {
+    const qty = parseInt(document.getElementById('qtyInput').value)||0;
+    document.getElementById('modalTotal').textContent = `₪${(qty*(currentStock?.price||0)).toFixed(2)}`;
+}
+
+function executeTrade(type) {
+    const qty = parseInt(document.getElementById('qtyInput').value);
+    if (!qty||qty<1) { showNotification(t().errInvalidQty,'error'); return; }
+    const cost = qty*currentStock.price;
+
+    if (type==='buy') {
+        if (cost>balance) { showNotification(t().errNoMoney,'error'); return; }
+        const isFirst = Object.keys(portfolio).length===0;
+        balance -= cost;
+        if (portfolio[currentStock.symbol]) {
+            const h = portfolio[currentStock.symbol];
+            h.avgPrice = (h.avgPrice*h.qty+cost)/(h.qty+qty);
+            h.qty += qty;
+        } else {
+            portfolio[currentStock.symbol] = {qty, avgPrice:currentStock.price};
+        }
+        addXP(10);
+        showNotification(t().buySuccess(qty,currentStock.name),'success');
+        if (isFirst) awardBadge('firstBuy');
+        checkProfitBadges();
+    } else {
+        const h = portfolio[currentStock.symbol];
+        if (!h||qty>h.qty) { showNotification(t().errNoShares,'error'); return; }
+        const isFirstSell = !earnedBadges.firstSell;
+        balance += cost;
+        h.qty -= qty;
+        if (h.qty===0) delete portfolio[currentStock.symbol];
+        addXP(5);
+        showNotification(t().sellSuccess(qty,currentStock.name),'info');
+        if (isFirstSell) awardBadge('firstSell');
+    }
+
+    updateHeader();
+    renderPortfolio();
+    renderLeaderboard();
+    closeTradeModal();
+    saveState();
+}
+
+// ════════════════════════════════════════════════════════
+//  CONNECT MODAL
+// ════════════════════════════════════════════════════════
+function openConnectModal() { document.getElementById('connectModal').classList.add('show'); }
+function closeConnectModal() { document.getElementById('connectModal').classList.remove('show'); }
+
+function switchConnectTab(tab, btn) {
+    document.querySelectorAll('.connect-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('shareTab').classList.toggle('hidden', tab!=='share');
+    document.getElementById('joinTab').classList.toggle('hidden', tab!=='join');
+}
+
+function joinFriend() {
+    const code = document.getElementById('friendCodeInput').value.trim().toUpperCase();
+    if (code.length!==4) { showNotification(t().err4chars,'error'); return; }
+    if (code===sessionCode) { showNotification(t().errOwnCode,'error'); return; }
+    const friendName = 'Friend '+code;
+    const colors = ['#f093fb','#00b09b','#f7971e','#ee0979'];
+    connectedPlayers.push({name:friendName, color:colors[Math.floor(Math.random()*colors.length)]});
+    closeConnectModal();
+    showNotification(t().connectedMsg(friendName),'success');
+    setTimeout(()=>showNotification(t().friendJoined(friendName),'info'),2500);
+}
+
+// ════════════════════════════════════════════════════════
+//  UI HELPERS
+// ════════════════════════════════════════════════════════
+function showTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+    document.getElementById(name).classList.remove('hidden');
+    btn.classList.add('active');
+    if (name==='leaderboard') renderLeaderboard();
+}
+
+function showNotification(msg, type='success') {
+    const el = document.getElementById('notification');
+    el.textContent = msg;
+    el.className = `notification ${type} show`;
+    setTimeout(()=>el.classList.remove('show'), 3000);
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+function init() {
+    renderAvatarGrid();
+    document.getElementById('sessionCode').textContent = sessionCode;
+    document.getElementById('modalCode').textContent = sessionCode;
+
+    const hasSession = loadState();
+
+    if (hasSession) {
+        document.getElementById('onboarding').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        setLang(currentLang);
+    } else {
+        setLang('he'); // default onboarding lang
+    }
+
+    setInterval(marketTick, 8000);
+    setInterval(triggerRandomEvent, 45000);
+    setInterval(saveState, 30000);
+}
+
+init();
+</script>
+</body>
+</html>
