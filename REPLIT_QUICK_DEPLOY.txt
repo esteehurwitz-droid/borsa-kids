@@ -1,0 +1,86 @@
+═══════════════════════════════════════════════════════════════════════════
+   DEPLOY TO REPLIT IN 5 MINUTES (Copy-Paste Guide)
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1: Go to https://replit.com
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Click "Sign up" (top right)
+2. Choose "Sign up with GitHub"
+3. Authorize Replit
+4. Done!
+
+
+STEP 2: Create Project from GitHub
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Click "Create" (top left)
+2. Click "Import from GitHub"
+3. Paste this URL:
+   https://github.com/esteehurwitz-droid/borsa-kids.git
+4. Click "Import from GitHub"
+5. Wait 30 seconds...
+
+
+STEP 3: Add API Key Secret
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Click "Secrets" (🔒 icon, left sidebar)
+2. Click "New Secret"
+3. Key:   FINNHUB_API_KEY
+4. Value: d8et4i1r01qub7kensv0d8et4i1r01qub7kensvg
+5. Click "Add Secret"
+
+
+STEP 4: Run Server
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Click "Run" (big button at top)
+2. Wait for server to start
+3. You see: "🚀 Stock market server running on port 5000"
+4. ✅ Done!
+
+
+STEP 5: Get Your URL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Look at top of console, find your URL like:
+   https://borsa-kids.YOUR-USERNAME.repl.co
+
+COPY THIS! You'll need it next.
+
+
+STEP 6: Update Frontend (On Your Computer)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Open: C:\Users\DELL\borsa-kids\index.html in Notepad
+2. Find line ~1799: const MARKET_API = 'http://localhost:5000';
+3. Replace with:
+   const MARKET_API = 'https://borsa-kids.YOUR-USERNAME.repl.co';
+   (use your actual Replit URL from Step 5)
+4. Save (Ctrl+S)
+
+
+STEP 7: Push to GitHub
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+In PowerShell:
+
+cd C:\Users\DELL\borsa-kids
+git add index.html
+git commit -m "Deploy to Replit - update backend URL"
+git push origin main
+
+
+STEP 8: Test It!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Open: https://esteehurwitz-droid.github.io/borsa-kids/
+2. Reload (Ctrl+R)
+3. See real prices from your Replit server!
+4. ✅ DEPLOYED!
+
+
+SHARE WITH FRIENDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Send them this link:
+   https://esteehurwitz-droid.github.io/borsa-kids/
+
+They'll play your game with REAL market prices! 🚀
+
+
+═══════════════════════════════════════════════════════════════════════════
+That's it! Your app is now live on Replit! 🎉
+═══════════════════════════════════════════════════════════════════════════
