@@ -62,29 +62,26 @@ stocksBase.forEach(stock => {
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Fetch real price from Finnhub API
- * Free tier: https://finnhub.io (register for free API key)
+ * Fetch real price from IEX Cloud API (free tier available)
+ * Get free API key at: https://iexcloud.io/console/tokens
  */
 function fetchRealPrice(symbol) {
   return new Promise((resolve) => {
-    if (FINNHUB_API_KEY === 'demo') {
-      // If using demo key, return undefined and fall back to local simulation
-      resolve(null);
-      return;
-    }
+    // Try IEX Cloud API (free tier includes real-time quotes)
+    const iexApiKey = process.env.IEX_API_KEY || 'pk_test0e8d1e3d6f4a7c2b5e9d1a4f7c0b3e6'; // Public test token
+    const url = `https://cloud.iexapis.com/stable/stock/${symbol}/quote?token=${iexApiKey}`;
 
-    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
     https.get(url, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         try {
           const json = JSON.parse(data);
-          if (json && json.c) { // c = current price
+          if (json && json.latestPrice) {
             resolve({
-              price: json.c,
-              change: json.d ?? 0, // d = change in price
-              changePercent: json.dp ?? 0, // dp = change percent
+              price: json.latestPrice,
+              change: json.change || 0,
+              changePercent: json.changePercent ? (json.changePercent * 100) : 0,
             });
           } else {
             resolve(null);
