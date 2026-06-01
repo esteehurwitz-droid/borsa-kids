@@ -1798,8 +1798,28 @@ function showNotification(msg, type='success') {
 // ════════════════════════════════════════════════════════
 //  LIVE MARKET DATA — Realistic Backend Simulation
 // ════════════════════════════════════════════════════════
-const MARKET_API = 'http://localhost:5000'; // Point to local backend server
+
+// Smart API URL detection: localStorage → localhost → prompt for Replit URL
+let MARKET_API = localStorage.getItem('MARKET_API_URL') || 'http://localhost:5000';
 let liveDataOK = false;
+
+// Setup wizard for Replit deployment
+async function showAPISetupWizard() {
+    const url = prompt(
+        '🚀 Enter your Replit server URL:\n\n' +
+        'Example: https://borsa-kids.myusername.repl.co\n\n' +
+        '(Get this from your Replit console after deploying)',
+        'https://borsa-kids.'
+    );
+    if (url && url.trim()) {
+        localStorage.setItem('MARKET_API_URL', url.trim());
+        MARKET_API = url.trim();
+        console.log('✅ Replit API URL saved:', MARKET_API);
+        // Retry fetching with new URL
+        setTimeout(fetchLivePrices, 500);
+        alert('✅ API URL configured! Game will now use your Replit server.\n\nRefresh the page to see live prices.');
+    }
+}
 
 async function fetchLivePrices() {
     try {
@@ -1830,7 +1850,18 @@ async function fetchLivePrices() {
         updateHeader();
         saveState();
     } catch (e) {
-        // silently fall back to local simulation
+        // If using localhost and it fails, check if deployed to Replit
+        if (MARKET_API === 'http://localhost:5000' && !localStorage.getItem('MARKET_API_URL')) {
+            console.warn('Local server not found. If you deployed to Replit, please configure the URL.');
+            // Show setup wizard on second failed attempt
+            if (window.replit_setup_attempts === undefined) {
+                window.replit_setup_attempts = 0;
+            }
+            if (window.replit_setup_attempts > 0) {
+                setTimeout(() => showAPISetupWizard(), 2000);
+            }
+            window.replit_setup_attempts++;
+        }
         console.warn('Could not fetch from market server:', e.message);
         updateLiveIndicator(false);
     }
