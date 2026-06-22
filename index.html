@@ -744,6 +744,7 @@
     <!-- TABS -->
     <div class="tabs">
         <button class="tab active" onclick="showTab('market',this)" id="tabMarket">🏪 שוק</button>
+        <button class="tab" onclick="showTab('indices',this)" id="tabIndices">📊 מדדים</button>
         <button class="tab" onclick="showTab('portfolio',this)" id="tabPortfolio">💼 תיק</button>
         <button class="tab" onclick="showTab('leaderboard',this)" id="tabLeaderboard">🏆 ליגה</button>
         <button class="tab" onclick="showTab('future',this)" id="tabFuture">⏳ עתיד</button>
@@ -757,6 +758,12 @@
             <div class="event-banner" id="eventBanner"></div>
             <div class="sector-filter" id="sectorFilter"></div>
             <div id="stockList"></div>
+        </div>
+
+        <!-- INDICES -->
+        <div id="indices" class="tab-content hidden">
+            <div style="padding: 12px 0; font-size: 12px; color: #666; text-align: center;">📈 מדדי הבורסה האמריקאית בזמן אמת</div>
+            <div id="indicesList" style="display: grid; gap: 8px;"></div>
         </div>
 
         <!-- PORTFOLIO -->
@@ -951,7 +958,7 @@ const T = {
         marketOpen:'שוק פתוח', marketNight:'שוק רגוע (לילה)',
         lblCash:'מזומן זמין', lblGameCode:'קוד המשחק שלך',
         btnPlayWithFriend:'👥 שחק עם חבר',
-        tabMarket:'🏪 שוק', tabPortfolio:'💼 תיק',
+        tabMarket:'🏪 שוק', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
         learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
         quizCorrect:'✅ תשובה נכונה! +50 XP', quizWrong:'❌ תשובה לא נכונה',
@@ -1622,6 +1629,76 @@ function renderStocks() {
     });
 }
 
+// Market Indices (S&P 500, Dow Jones, Nasdaq, VIX, etc.)
+const indicesData = [
+    {symbol: '^GSPC', name: 'S&P 500', icon: '📈', description: '500 חברות גדולות'},
+    {symbol: '^DJI', name: 'Dow Jones', icon: '🏛️', description: '30 חברות גדולות'},
+    {symbol: '^IXIC', name: 'Nasdaq', icon: '💻', description: 'חברות טכנולוגיה'},
+    {symbol: '^RUT', name: 'Russell 2000', icon: '🏢', description: 'חברות קטנות'},
+    {symbol: '^VIX', name: 'VIX (Fear Index)', icon: '😰', description: 'אדווה של הפחד בשוק'},
+    {symbol: 'EURUSD=X', name: 'EUR/USD', icon: '💱', description: 'שער חליפין יורו/דולר'},
+];
+
+let indicesCache = {};
+
+async function fetchIndicesData() {
+    const list = document.getElementById('indicesList');
+    if (!list) return;
+
+    for (const idx of indicesData) {
+        try {
+            const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${idx.symbol}&token=${FINNHUB_API_KEY}`);
+            const data = await res.json();
+
+            if (data && data.c) {
+                indicesCache[idx.symbol] = {
+                    price: data.c,
+                    change: data.d || 0,
+                    changePercent: data.dp || 0
+                };
+            }
+        } catch (e) {
+            console.log(`Could not fetch ${idx.symbol}`);
+        }
+    }
+
+    renderIndices();
+}
+
+function renderIndices() {
+    const list = document.getElementById('indicesList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    indicesData.forEach(idx => {
+        const data = indicesCache[idx.symbol];
+        if (!data) return;
+
+        const up = data.changePercent >= 0;
+        const el = document.createElement('div');
+        el.style.cssText = 'background: #f8f9fa; padding: 12px; border-radius: 12px; border-right: 4px solid ' + (up ? '#00b09b' : '#ff416c') + '; cursor: pointer; transition: all 0.2s';
+        el.onmouseover = () => el.style.backgroundColor = '#f0f0f0';
+        el.onmouseout = () => el.style.backgroundColor = '#f8f9fa';
+
+        el.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; font-size: 14px;">${idx.icon} ${idx.name}</div>
+                    <div style="font-size: 11px; color: #999;">${idx.description}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: bold; font-size: 14px;">₪${data.price.toFixed(2)}</div>
+                    <div style="font-size: 12px; color: ${up ? '#00b09b' : '#ff416c'}; font-weight: bold;">
+                        ${up ? '▲' : '▼'} ${Math.abs(data.changePercent).toFixed(2)}%
+                    </div>
+                </div>
+            </div>
+        `;
+
+        list.appendChild(el);
+    });
+}
+
 function renderPortfolio() {
     const list = document.getElementById('portfolioList');
     if (!list) return;
@@ -2045,6 +2122,8 @@ function showTab(name, btn) {
     document.getElementById(name).classList.remove('hidden');
     btn.classList.add('active');
     if (name==='leaderboard') renderLeaderboard();
+    if (name==='indices') { fetchIndicesData(); }
+    if (name==='market') { renderStocks(); }
 }
 
 function showNotification(msg, type='success') {
@@ -2164,6 +2243,10 @@ function init() {
     // Fetch live prices immediately, then every 60 seconds
     fetchLivePrices();
     setInterval(fetchLivePrices, 60000);
+
+    // Fetch market indices immediately, then every 60 seconds
+    fetchIndicesData();
+    setInterval(fetchIndicesData, 60000);
 
     // Simulation fills the gaps when market is closed / fetch fails
     setInterval(() => { if (!liveDataOK) marketTick(); }, 8000);
