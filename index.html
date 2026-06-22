@@ -830,9 +830,9 @@
         <!-- LEARN -->
         <div id="learn" class="tab-content hidden">
             <div style="display:flex;gap:8px;margin-bottom:16px">
-                <button class="tab-sub active" onclick="showLearnTab('lessons',this)" style="flex:1">📚 Lessons</button>
-                <button class="tab-sub" onclick="showLearnTab('quiz',this)" style="flex:1">🧠 Quiz</button>
-                <button class="tab-sub" onclick="showLearnTab('news',this)" style="flex:1">📰 News</button>
+                <button class="tab-sub active" onclick="showLearnTab('lessons',this)" style="flex:1" id="tabLessons">📚 Lessons</button>
+                <button class="tab-sub" onclick="showLearnTab('quiz',this)" style="flex:1" id="tabQuiz">🧠 Quiz</button>
+                <button class="tab-sub" onclick="showLearnTab('news',this)" style="flex:1" id="tabNews">📰 News</button>
             </div>
             <div id="lessonsTab" class="learn-tab">
                 <div id="learnContent"></div>
@@ -954,6 +954,12 @@ const T = {
         btnPlayWithFriend:'👥 שחק עם חבר',
         tabMarket:'🏪 שוק', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
+        learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
+        quizCorrect:'✅ תשובה נכונה! +50 XP', quizWrong:'❌ תשובה לא נכונה',
+        quizProgress:'שאלה', quizOf:'מתוך',
+        newsTitle:'📰 חדשות בורסה בזמן אמת',
+        newsLoading:'⏳ טוען חדשות שוק...',
+        newsError:'📡 החדשות זמינות בsites השוק',
         lblPortfolioVal:'שווי תיק', lblProfitLoss:'רווח/הפסד', lblStocks:'מניות',
         emptyPortfolio:'התיק שלך ריק<br>קנה את המניה הראשונה שלך!',
         lblCurrentPrice:'מחיר נוכחי', lblTotalCost:'עלות כוללת',
@@ -1000,28 +1006,28 @@ const T = {
             {text:'💳 ויזא מדווחת על רווח שיא',affected:['V','JPM'],factor:1.04},
         ],
         learn:[
-            {icon:'🎯',title:'What Are Stocks?',text:'A stock is a small piece of a company. When you buy stock, you become a partial owner! If the company profits - you profit too.'},
-            {icon:'📈',title:'Bull & Bear Markets',text:'Bull = prices rise ↑ • Bear = prices fall ↓<br>Bull Market: Great for investors buying. Bear Market: Buy quality stocks cheap!'},
-            {icon:'💼',title:'Building Your Portfolio',text:'Portfolio = all your investments. Strategy: Own 5-10 different stocks across sectors. Never put all money in ONE stock!'},
-            {icon:'🎓',title:'Risk vs Reward',text:'High risk = High reward (but big losses possible). Low risk = Slow growth. Beginners: Start with stable tech giants like AAPL, MSFT.'},
-            {icon:'📊',title:'Reading Stock Charts',text:'Green = price up 📈 • Red = price down 📉<br>Look at trends: Is it going up long-term? Don\'t panic on small dips!'},
-            {icon:'💡',title:'P/E Ratio Explained',text:'P/E = Price ÷ Earnings. Low P/E = cheap stock. High P/E = investors believe in growth. Compare P/E between similar companies!'},
-            {icon:'🔍',title:'Fundamental Analysis',text:'Look at: Revenue growth, Profit margins, Market share. Ask: Is this company getting stronger every year?'},
-            {icon:'🎯',title:'Technical Analysis',text:'Study price patterns & volume. Support = low price where buyers jump in. Resistance = high price where sellers jump out.'},
-            {icon:'🌍',title:'Global Markets Matter',text:'US market affects the world. Apple sales drop? Tech stocks fall globally. Watch international events!'},
-            {icon:'🤖',title:'Artificial Intelligence (AI)',text:'AI powers: Self-driving cars, ChatGPT, medical diagnosis. Companies like NVDA make the chips that run AI.'},
-            {icon:'🦾',title:'Robotics Revolution',text:'Robots in hospitals, factories, space. ISRG makes surgical robots. ABB makes industrial robots. Future is automation!'},
-            {icon:'⚡',title:'Clean Energy Stocks',text:'Solar (ENPH), Wind, Electric cars (TSLA). Governments pushing for green energy = growing industry!'},
-            {icon:'🎮',title:'Gaming & Metaverse',text:'RBLX (Roblox) = gaming platform for kids. NFLX = streaming movies. Digital entertainment is HUGE!'},
-            {icon:'💰',title:'Dividends = Passive Income',text:'Some companies pay shareholders quarterly. Example: $10/share dividend = free money just for owning the stock!'},
-            {icon:'📱',title:'Tech Giants Explained',text:'AAPL = iPhone/Mac • GOOGL = Search/YouTube • MSFT = Windows/Azure • META = Facebook/Instagram. These 4 dominate!'},
-            {icon:'💳',title:'Payment Systems',text:'Visa processes trillions in transactions yearly. Every time you swipe a card, Visa makes money!'},
-            {icon:'🏦',title:'Banking Stocks',text:'JPMorgan = investment banking giant. Banks profit from loans and trading. Stable but lower growth than tech.'},
-            {icon:'🌱',title:'Growth vs Value',text:'Growth stocks: Young companies with potential (NVDA, PLTR). Value stocks: Cheap established companies (JPM, KO). Mix both!'},
-            {icon:'⚠️',title:'Market Crashes Happen',text:'2008: Financial crisis. 2020: COVID crash. But markets ALWAYS recovered. Long-term investing beats timing!'},
-            {icon:'🎯',title:'Dollar Cost Averaging',text:'Invest same amount monthly, not all at once. Buy high & low → average price stays reasonable. Smart strategy!'},
-            {icon:'🔒',title:'Secure Your Investments',text:'Use trusted brokers. Enable 2FA. Don\'t share passwords. Keep records. Real investors take security seriously!'},
-            {icon:'🚀',title:'The Warren Buffett Way',text:'Buffett: "Buy quality, hold forever, ignore noise." Invest in companies you understand. Think 10-year horizon, not 10-minute.'},
+            {icon:'🎯',title:'מה זה מניות?',text:'מניה היא חלק קטן מחברה. כשאתה קונה מניה, אתה הופך לבעלים של חלק קטן! אם החברה מרוויחה – גם אתה מרוויח.'},
+            {icon:'📈',title:'בורסה עולה וירה',text:'עלייה = מחירים עולים ⬆️ • ירה = מחירים יורדים ⬇️<br>בעלייה: טוב לקונים. בירה: זמן טוב לקנות מניות טובות!'},
+            {icon:'💼',title:'בניית תיק השקעות',text:'תיק = כל ההשקעות שלך. אסטרטגיה: בעלות 5-10 מניות בחברות שונות. אל תשים הכל במניה אחת!'},
+            {icon:'🎓',title:'סיכון מול רווח',text:'סיכון גבוה = רווח גבוה אבל גם הפסד אפשרי. סיכון נמוך = גדול לאט. מתחילים: התחלו עם חברות יציבות כמו אפל ומיקרוסופט.'},
+            {icon:'📊',title:'קריאת גרפים',text:'ירוק = מחיר עולה 📈 • אדום = מחיר יורד 📉<br>חפשו מגמות: האם עולה בטווח ארוך? אל תפחדו מנפילות קטנות!'},
+            {icon:'💡',title:'יחס P/E',text:'P/E = מחיר ÷ הרווחים. P/E נמוך = מניה זולה. P/E גבוה = משקיעים מאמינים בגדילה. השוו בין חברות דומות!'},
+            {icon:'🔍',title:'ניתוח יסודי',text:'בדקו: גדילת הכנסות, רווח נקי, נתח שוק. שאלו: האם החברה הופכת חזקה יותר בכל שנה?'},
+            {icon:'📉',title:'ניתוח טכני',text:'לימדו תבניות מחיר. תמיכה = מחיר נמוך שבו קונים קופצים. התנגדות = מחיר גבוה שבו מוכרים קופצים.'},
+            {icon:'🌍',title:'השוק העולמי חשוב',text:'כשאפל מוכרת פחות, מניות טק יורדות בעולם. עקבו אחרי אירועים בינלאומיים!'},
+            {icon:'🤖',title:'בינה מלאכותית',text:'AI מנהל: מכוניות אוטונומיות, ChatGPT, אבחון רפואי. NVDA מייצרת את השבבים שמריצים AI!'},
+            {icon:'🦾',title:'רובוטיקה',text:'רובוטים בבתי חולים, במפעלים, בחלל. ISRG עושה רובוטים לניתוחים. ABB עושה רובוטים תעשייתיים!'},
+            {icon:'⚡',title:'אנרגיה נקייה',text:'סולار (ENPH), רוח, מכוניות חשמליות (TSLA). ממשלות דוחפות אנרגיה ירוקה = תעשייה גדלה!'},
+            {icon:'🎮',title:'משחקים ומטאוורס',text:'RBLX = פלטפורמת משחקים לילדים. NFLX = סרטים וסדרות. בידור דיגיטלי הוא ענק!'},
+            {icon:'💰',title:'דיבידנדים',text:'חברות כמה משלמות למניות שלהן. דוגמה: דיבידנד של ₪10 למניה = כסף חינם רק בעלות!'},
+            {icon:'📱',title:'ענקי הטק',text:'אפל = אייפון ומק • גוגל = חיפוש ויוטיוב • מיקרוסופט = וינדוס • מטא = פייסבוק. 4 הענקים שולטים!'},
+            {icon:'💳',title:'מערכות תשלום',text:'ויזה מעבדת טריליונים בעסקאות בשנה. כל פעם שאתה מעביר כרטיס, ויזה מרוויחה!'},
+            {icon:'🏦',title:'מניות בנקים',text:'JPMorgan = ענק בנקאות. בנקים מרוויחים מהלוואות ומסחר. יציבים אבל גדול לאט מטק.'},
+            {icon:'🌱',title:'גדילה מול ערך',text:'מניות גדילה: חברות צעירות עם פוטנציאל (NVDA). מניות ערך: חברות זולות וישנות (JPM). עשו מהן שתיהן!'},
+            {icon:'⚠️',title:'קריסות שוק',text:'2008: קריסה פיננסית. 2020: קוד-19. אבל השוק תמיד התאושש! השקעה ארוכת טווח ניצחת!'},
+            {icon:'🎯',title:'השקעה חודשית קבועה',text:'השקיעו אותה סכום כל חודש, לא הכל בפעם. קניות גבוה ונמוך = מחיר ממוצע סביר!'},
+            {icon:'🔒',title:'שמרו על השקעות',text:'השתמשו בברוקרים בטוחים. הפעילו 2FA. אל תשתפו סיסמאות. שמרו רשימות. משקיעים אמיתיים בטיחו!'},
+            {icon:'🚀',title:'דרך וורן באפט',text:'באפט: "קנו איכות, החזיקו לתמיד, התעלמו מרעשים." השקיעו בחברות שאתם מבינים. חשבו 10 שנים!'},
         ],
         stockDescs:{
             AAPL:'יוצרת אייפון, אייפד ומק',GOOGL:'מנוע החיפוש ויוטיוב',MSFT:'ווינדוס, אקסל ואקסבוקס',
@@ -1710,7 +1716,17 @@ function renderLearn() {
     });
 }
 
+function initLearnTabs() {
+    const tr = t();
+    if (document.getElementById('tabLessons')) {
+        document.getElementById('tabLessons').textContent = (tr.learnLessons || '📚 Lessons');
+        document.getElementById('tabQuiz').textContent = (tr.learnQuiz || '🧠 Quiz');
+        document.getElementById('tabNews').textContent = (tr.learnNews || '📰 News');
+    }
+}
+
 function showLearnTab(tab, btn) {
+    initLearnTabs();
     document.querySelectorAll('.learn-tab').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.tab-sub').forEach(el => el.classList.remove('active'));
     if (tab === 'lessons') { document.getElementById('lessonsTab').classList.remove('hidden'); renderLearn(); }
@@ -1720,9 +1736,18 @@ function showLearnTab(tab, btn) {
 }
 
 const quizData = [
-    {q:'What does P/E ratio mean?',a:['Price/Earnings ratio','Profit per Employee','Price/Exchange rate','Production/Efficiency'],c:0,exp:'P/E = Stock Price ÷ Earnings per Share. Low P/E = potentially cheap stock.'},
-    {q:'What is diversification?',a:['Investing in many different stocks','Buying the same stock repeatedly','Selling everything','Making more money'],c:0,exp:'Diversification reduces risk by spreading investments across different companies and sectors.'},
-    {q:'What happens in a bear market?',a:['Prices fall consistently','Prices rise quickly','Market stays flat','All stocks disappear'],c:0,exp:'Bear market = declining prices. Bull market = rising prices. Remember: Bear pushes down, Bull pushes up!'},
+    {q:'מה זה יחס P/E?',a:['מחיר חלקי רווחים','רווח למעביד','מחיר לשער חליפין','יצור לעובד'],c:0,exp:'P/E = מחיר מניה ÷ רווח למניה. P/E נמוך = מניה זולה. P/E גבוה = גדילה צפויה.'},
+    {q:'מה זה גיוון?',a:['השקעה בהרבה חברות שונות','קנייה של אותה מניה שוב ושוב','מכירה של הכל','הרוויחו יותר כסף'],c:0,exp:'גיוון = הפזרו בין חברות וסקטורים. זה מקטין סיכון של הפסד גדול.'},
+    {q:'מה קורה בשוק ירי?',a:['מחירים יורדים ברציפות','מחירים עולים במהירות','השוק נשאר כמו הוא','כל המניות נעלמות'],c:0,exp:'ירי = מחירים יורדים. עלייה = מחירים עולים. דוב דוחף למטה, שור דוחף למעלה!'},
+    {q:'מה זה דיבידנד?',a:['תשלום מחברה למניות שלהן','ריבית מבנק','עלות קנייה של מניה','שינוי יומי במחיר'],c:0,exp:'דיבידנד = חברה משלמת למניות שלהן מהרווח שלהן. מעולה למשקיעים ארוכי טווח!'},
+    {q:'מה זה תנודתיות?',a:['כמה מחיר מניה משתנה','ערך כולל של כל המניות','גודל החברה','מספר בעלי מניות'],c:0,exp:'תנודתיות גבוהה = סיכונים גדולים. תנודתיות נמוכה = יציבות.'},
+    {q:'איזו חברה עושה אייפון?',a:['Apple (AAPL)','Samsung','Microsoft','Intel'],c:0,exp:'אפל היא החברה היקרה ביותר בעולם. אייפון, מק, אייפד.'},
+    {q:'מה עושה Nvidia?',a:['עושה שבבי AI','עושה סמארטפונים','מפעילה מדיה חברתית','עושה מכוניות'],c:0,exp:'NVDA עושה שבבים לAI, משחקים, מרכזי נתונים. טכנולוגיה חיוני!'},
+    {q:'מה זה market cap?',a:['מחיר מניה × מספר המניות','הכנסות כוללות','רווח כולל','משכורת של מנכ"ל'],c:0,exp:'Market cap = ערך כולל של החברה. אפל ~$3 טריליון, מיקרוסופט ~$2.5 טריליון.'},
+    {q:'מה גורם למחיר מניה לעלות?',a:['רווחים טובים + אופטימיזם','ירידה במכירות','חדשות רעות','מיתון כלכלי'],c:0,exp:'מחירים עולים כשחברה עושה טוב וההעתיד נראה בהיר.'},
+    {q:'מה זה IPO?',a:['הנפקה לציבור - חברה הופכת ציבורית','אפשרות השקעה','הזמנה בינלאומית','אופטימיזציה של מחיר'],c:0,exp:'IPO = פעם ראשונה שחברה מוכרת מניות לציבור. דוגמה: Airbnb IPO 2020.'},
+    {q:'מה לעשות בעת קריסת שוק?',a:['הישאר שקט, קנה מניות איכותיות','פאניקה, מכור הכל','התקשר לבנק','אל תעשה כלום','בכה'],c:0,exp:'קריסות = הזדמנות! מניות איכותיות הופכות זולות. משקיעים ארוכי טווח אוהבים קריסות!'},
+    {q:'מה זה dollar-cost averaging?',a:['השקעה אותה סכום כל חודש','חישוב שער חליפין','ניהול כסף','שיטת תמחור של מניות'],c:0,exp:'DCA = השקיעו בעקביות בלא קשר למחיר. מסיר רגשות. מעולה למשקיעים!'},
     {q:'What is a dividend?',a:['Payment from company profits to shareholders','Interest from a bank','Cost of buying stock','Daily change in price'],c:0,exp:'Dividends are payments companies give to shareholders from profits. Great for long-term investors!'},
     {q:'What is volatility?',a:['How much a stock price changes','Total value of all stocks','Company size','Number of shareholders'],c:0,exp:'High volatility = big price swings (risky). Low volatility = steady price (safer).'},
     {q:'When should you sell a stock?',a:['When your investment goal is reached','When price drops even 1%','Every single day','When you feel scared'],c:0,exp:'Sell when: your goal is met, fundamentals change, or you need cash. Don\'t panic-sell on small drops!'},
@@ -1754,17 +1779,20 @@ const quizData = [
 
 function renderQuiz() {
     const container = document.getElementById('quizContent');
-    const qIdx = sessionStorage.getItem('currentQuiz') || 0;
+    const qIdx = parseInt(sessionStorage.getItem('currentQuiz') || 0);
     const q = quizData[qIdx];
     if (!q) {
-        container.innerHTML = '<div style="text-align:center;padding:20px"><h2>Quiz Complete! 🎉</h2><p>You answered all questions! Keep learning!</p></div>';
+        const txt = t().quizOf || 'Quiz Complete!';
+        container.innerHTML = `<div style="text-align:center;padding:20px"><h2>✅ חידון הסתיים! 🎉</h2><p>עניתם על כל השאלות! המשיכו ללמוד!</p></div>`;
         return;
     }
-    let html = `<div style="padding:15px"><div style="font-size:13px;color:#999;margin-bottom:10px">Question ${parseInt(qIdx)+1}/${quizData.length}</div>`;
+    const prog = t().quizProgress || 'Question';
+    let html = `<div style="padding:15px"><div style="font-size:13px;color:#999;margin-bottom:10px">${prog} ${parseInt(qIdx)+1}/${quizData.length}</div>`;
     html += `<h3 style="margin:15px 0">${q.q}</h3>`;
     q.a.forEach((ans,i) => {
         html += `<button onclick="answerQuiz(${i})" style="display:block;width:100%;padding:12px;margin:8px 0;border:2px solid #ddd;border-radius:8px;background:#f9f9f9;cursor:pointer;text-align:left">● ${ans}</button>`;
     });
+    html += `<div style="margin-top:15px;padding:10px;background:#f0f0f0;border-radius:8px;font-size:12px;color:#666"><b>💡 הסבר:</b> ${q.exp}</div>`;
     html += '</div>';
     container.innerHTML = html;
 }
@@ -1775,32 +1803,38 @@ function answerQuiz(idx) {
     const correct = idx === q.c;
     if (correct) {
         addXP(50);
-        showNotif('✅ Correct! +50 XP');
+        const msg = t().quizCorrect || '✅ Correct! +50 XP';
+        showNotif(msg);
     } else {
-        showNotif('❌ Wrong answer');
+        const msg = t().quizWrong || '❌ Wrong answer';
+        showNotif(msg);
     }
     sessionStorage.setItem('currentQuiz', qIdx + 1);
-    renderQuiz();
+    setTimeout(renderQuiz, 500);
 }
 
 async function fetchRealNews() {
     const container = document.getElementById('newsContent');
-    container.innerHTML = '<div style="text-align:center;padding:20px">📰 Loading real market news...</div>';
+    const loading = t().newsLoading || '📰 Loading real market news...';
+    container.innerHTML = `<div style="text-align:center;padding:20px">${loading}</div>`;
     try {
         const res = await fetch('https://finnhub.io/api/v1/news?category=general&limit=20&token=' + FINNHUB_API_KEY);
         const news = await res.json();
         if (!Array.isArray(news) || news.length === 0) throw new Error('No news');
-        let html = '';
+        let html = '<div style="font-size:12px">';
         news.slice(0,10).forEach(item => {
+            const date = new Date(item.datetime*1000).toLocaleDateString();
             html += `<div style="padding:12px;border-bottom:1px solid #eee;cursor:pointer;transition:all 0.2s" onmouseover="this.style.backgroundColor='#f5f5f5'" onmouseout="this.style.backgroundColor='white'">
-                <div style="font-size:12px;color:#666">${new Date(item.datetime*1000).toLocaleDateString()}</div>
-                <div style="font-weight:bold;margin:5px 0;font-size:14px">${item.headline}</div>
-                <div style="font-size:12px;color:#888">${item.summary?.substring(0,100)}...</div>
+                <div style="font-size:11px;color:#999">${date}</div>
+                <div style="font-weight:bold;margin:5px 0;font-size:13px">${item.headline}</div>
+                <div style="font-size:11px;color:#aaa">${(item.summary || '').substring(0,80)}...</div>
             </div>`;
         });
+        html += '</div>';
         container.innerHTML = html;
     } catch (e) {
-        container.innerHTML = '<div style="padding:20px;color:#666">📡 Real news temporarily unavailable. Check finnhub.io for market news.</div>';
+        const error = t().newsError || '📡 Real news temporarily unavailable.';
+        container.innerHTML = `<div style="padding:20px;color:#666;text-align:center">${error}</div>`;
     }
 }
 
