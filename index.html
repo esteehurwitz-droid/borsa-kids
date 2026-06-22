@@ -848,6 +848,35 @@
     </div>
 </div>
 
+<!-- STOCK DETAIL MODAL WITH CHART -->
+<div class="modal-overlay" id="stockDetailModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-stock-header">
+            <div class="modal-icon" id="detailIcon"></div>
+            <div>
+                <div class="modal-stock-name" id="detailName"></div>
+                <div class="modal-stock-desc" id="detailDesc"></div>
+            </div>
+        </div>
+        <div style="background:#f9f9f9;padding:12px;border-radius:8px;margin-bottom:12px">
+            <canvas id="priceChart" style="max-height:250px"></canvas>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12px">
+            <div style="background:#f0f9ff;padding:8px;border-radius:8px;text-align:center">
+                <div style="color:#666">Current Price</div>
+                <div id="detailPrice" style="font-weight:bold;font-size:16px">₪0</div>
+            </div>
+            <div style="background:#f9f0ff;padding:8px;border-radius:8px;text-align:center">
+                <div style="color:#666">24h Change</div>
+                <div id="detailChange" style="font-weight:bold;font-size:14px">+0%</div>
+            </div>
+        </div>
+        <button class="btn btn-buy" onclick="openTradeModalFromDetail()" style="width:100%;margin-bottom:8px">🔵 Trade This Stock</button>
+        <button class="btn btn-cancel" onclick="closeDetailModal()">Close</button>
+    </div>
+</div>
+
 <!-- TRADE MODAL -->
 <div class="modal-overlay" id="tradeModal">
     <div class="modal-sheet">
@@ -971,14 +1000,28 @@ const T = {
             {text:'💳 ויזא מדווחת על רווח שיא',affected:['V','JPM'],factor:1.04},
         ],
         learn:[
-            {icon:'🎯',title:'מה זה מניות?',text:'מניה היא חלק קטן מחברה. כשאתה קונה מניה, אתה הופך לבעלים של חלק קטן! אם החברה מרוויחה – גם אתה מרוויח.'},
-            {icon:'🤖',title:'בינה מלאכותית (AI)',text:'AI זה טכנולוגיה שעוזרת למחשבים לחשוב. חברות כמו נווידיא מייצרות את השבבים שמריצים את ה-AI של כולם.'},
-            {icon:'🦾',title:'רובוטיקה',text:'רובוטים עובדים במפעלים, בבתי חולים ואפילו בחלל. חברות שמייצרות רובוטים נחשבות למניות צמיחה חזקות.'},
-            {icon:'🌱',title:'מניות צמיחה',text:'חברות צעירות וחדשניות שגדלות מהר. הן יכולות לעלות הרבה – אבל גם לרדת! יותר סיכון = יותר הזדמנות.'},
-            {icon:'📊',title:'תנודתיות',text:'כמה מחיר מניה זז. מניה תנודתית יכולה לעלות 20% ביום ולרדת 20% למחרת. מרגש, אבל מסוכן!'},
-            {icon:'🔋',title:'אנרגיה נקייה',text:'אנרגיה מהשמש, הרוח והמים. ממשלות בכל העולם תומכות בחברות אלו.'},
-            {icon:'💰',title:'מושגים חשובים',text:'<b>פורטפוליו</b> – כל המניות שלך<br><b>גיוון</b> – לפזר בין תחומים<br><b>דיבידנד</b> – חלוקת רווח<br><b>ריבית דריבית</b> – רווח על הרווח'},
-            {icon:'💡',title:'טיפים חכמים',text:'• פזר בין תחומים שונים<br>• אל תשקיע יותר ממה שאתה מוכן להפסיד<br>• חשוב לטווח ארוך<br>• עקוב אחרי חדשות השוק'},
+            {icon:'🎯',title:'What Are Stocks?',text:'A stock is a small piece of a company. When you buy stock, you become a partial owner! If the company profits - you profit too.'},
+            {icon:'📈',title:'Bull & Bear Markets',text:'Bull = prices rise ↑ • Bear = prices fall ↓<br>Bull Market: Great for investors buying. Bear Market: Buy quality stocks cheap!'},
+            {icon:'💼',title:'Building Your Portfolio',text:'Portfolio = all your investments. Strategy: Own 5-10 different stocks across sectors. Never put all money in ONE stock!'},
+            {icon:'🎓',title:'Risk vs Reward',text:'High risk = High reward (but big losses possible). Low risk = Slow growth. Beginners: Start with stable tech giants like AAPL, MSFT.'},
+            {icon:'📊',title:'Reading Stock Charts',text:'Green = price up 📈 • Red = price down 📉<br>Look at trends: Is it going up long-term? Don\'t panic on small dips!'},
+            {icon:'💡',title:'P/E Ratio Explained',text:'P/E = Price ÷ Earnings. Low P/E = cheap stock. High P/E = investors believe in growth. Compare P/E between similar companies!'},
+            {icon:'🔍',title:'Fundamental Analysis',text:'Look at: Revenue growth, Profit margins, Market share. Ask: Is this company getting stronger every year?'},
+            {icon:'🎯',title:'Technical Analysis',text:'Study price patterns & volume. Support = low price where buyers jump in. Resistance = high price where sellers jump out.'},
+            {icon:'🌍',title:'Global Markets Matter',text:'US market affects the world. Apple sales drop? Tech stocks fall globally. Watch international events!'},
+            {icon:'🤖',title:'Artificial Intelligence (AI)',text:'AI powers: Self-driving cars, ChatGPT, medical diagnosis. Companies like NVDA make the chips that run AI.'},
+            {icon:'🦾',title:'Robotics Revolution',text:'Robots in hospitals, factories, space. ISRG makes surgical robots. ABB makes industrial robots. Future is automation!'},
+            {icon:'⚡',title:'Clean Energy Stocks',text:'Solar (ENPH), Wind, Electric cars (TSLA). Governments pushing for green energy = growing industry!'},
+            {icon:'🎮',title:'Gaming & Metaverse',text:'RBLX (Roblox) = gaming platform for kids. NFLX = streaming movies. Digital entertainment is HUGE!'},
+            {icon:'💰',title:'Dividends = Passive Income',text:'Some companies pay shareholders quarterly. Example: $10/share dividend = free money just for owning the stock!'},
+            {icon:'📱',title:'Tech Giants Explained',text:'AAPL = iPhone/Mac • GOOGL = Search/YouTube • MSFT = Windows/Azure • META = Facebook/Instagram. These 4 dominate!'},
+            {icon:'💳',title:'Payment Systems',text:'Visa processes trillions in transactions yearly. Every time you swipe a card, Visa makes money!'},
+            {icon:'🏦',title:'Banking Stocks',text:'JPMorgan = investment banking giant. Banks profit from loans and trading. Stable but lower growth than tech.'},
+            {icon:'🌱',title:'Growth vs Value',text:'Growth stocks: Young companies with potential (NVDA, PLTR). Value stocks: Cheap established companies (JPM, KO). Mix both!'},
+            {icon:'⚠️',title:'Market Crashes Happen',text:'2008: Financial crisis. 2020: COVID crash. But markets ALWAYS recovered. Long-term investing beats timing!'},
+            {icon:'🎯',title:'Dollar Cost Averaging',text:'Invest same amount monthly, not all at once. Buy high & low → average price stays reasonable. Smart strategy!'},
+            {icon:'🔒',title:'Secure Your Investments',text:'Use trusted brokers. Enable 2FA. Don\'t share passwords. Keep records. Real investors take security seriously!'},
+            {icon:'🚀',title:'The Warren Buffett Way',text:'Buffett: "Buy quality, hold forever, ignore noise." Invest in companies you understand. Think 10-year horizon, not 10-minute.'},
         ],
         stockDescs:{
             AAPL:'יוצרת אייפון, אייפד ומק',GOOGL:'מנוע החיפוש ויוטיוב',MSFT:'ווינדוס, אקסל ואקסבוקס',
@@ -1555,7 +1598,8 @@ function renderStocks() {
 
         const el = document.createElement('div');
         el.className = 'stock-item';
-        el.onclick = () => openTradeModal(stock);
+        el.style.cursor = 'pointer';
+        el.onclick = () => openStockDetail(stock);
         el.innerHTML = `
           <div class="stock-left">
             <div class="stock-icon" style="background:${up?'#e8f5e9':'#fce4e4'}">${stock.icon}</div>
@@ -1684,6 +1728,28 @@ const quizData = [
     {q:'When should you sell a stock?',a:['When your investment goal is reached','When price drops even 1%','Every single day','When you feel scared'],c:0,exp:'Sell when: your goal is met, fundamentals change, or you need cash. Don\'t panic-sell on small drops!'},
     {q:'What is compound interest?',a:['Earning interest on your interest and principal','Interest you pay twice','Interest that\'s complicated','Daily interest payments'],c:0,exp:'Einstein called it "the 8th wonder". Your money earns money, which earns money, exponentially!'},
     {q:'What does "HODL" mean?',a:['Hold/Buy and keep long-term','Hoping our dividends leap','High order delivery list','Honestly overdue liquidation'],c:0,exp:'HODL = long-term strategy. Ignore short-term noise. Time in market beats timing the market!'},
+    {q:'Which company makes iPhones?',a:['Apple (AAPL)','Samsung','Microsoft','Intel'],c:0,exp:'Apple is the most valuable company. iPhones, Macs, iPads - ecosystem of devices.'},
+    {q:'What does NVDA do?',a:['Makes AI chips for computers','Makes smartphones','Operates social media','Manufactures cars'],c:0,exp:'NVIDIA chips power AI, gaming, data centers. Essential technology!'},
+    {q:'What is market cap?',a:['Stock price × Number of shares','Total revenue of company','Profit of company','CEO salary'],c:0,exp:'Market cap = total company value. Apple ~$3T, Microsoft ~$2.5T, Google ~$2T.'},
+    {q:'What causes stock prices to rise?',a:['Good earnings + investor optimism','Dropping sales numbers','Bad news about company','Economic recession'],c:0,exp:'Prices rise when: company performs well, future looks bright, demand for stock increases.'},
+    {q:'What is a stock split?',a:['Company divides shares into more pieces','Selling half your portfolio','Breaking partnership','Division of profits'],c:0,exp:'Example: 1 share at $500 → 5 shares at $100. Easier for retail investors to buy!'},
+    {q:'What is an IPO?',a:['Initial Public Offering - when company goes public','Investment Portfolio Option','International Product Order','Immediate Price Optimization'],c:0,exp:'IPO = first time company sells shares to public. Example: Airbnb IPO was huge in 2020.'},
+    {q:'What is a bull trap?',a:['Stock rises then crashes suddenly','Always buying stocks','Good investment opportunity','Trading strategy'],c:0,exp:'Bull trap = false signal where price rises briefly then falls hard. Experienced traders catch these.'},
+    {q:'What should you do during a market crash?',a:['Stay calm and buy quality stocks if you can','Panic and sell everything','Call the bank','Do nothing and cry'],c:0,exp:'Crashes are opportunities! Quality companies get cheaper. Long-term investors love crashes!'},
+    {q:'What is the S&P 500?',a:['Index of 500 largest US companies','Specific stock name','Trading platform','Government agency'],c:0,exp:'S&P 500 = good measure of overall market health. AAPL, MSFT, GOOGL are big parts of it.'},
+    {q:'What is margin trading?',a:['Borrowing money to buy stocks','Trading at profit margin','Stock price margin','Border trading'],c:0,exp:'Margin = borrowing from broker. Risky! Can lose more than you invested. Beginners: avoid!'},
+    {q:'What is a stock option?',a:['Right to buy/sell at future price','Choosing which stocks to own','Optional purchase','Discount offer'],c:0,exp:'Options = advanced tool. Not for beginners. Can be risky - leverage cuts both ways!'},
+    {q:'Which tech company operates YouTube?',a:['Google (GOOGL)','Amazon','Netflix','TikTok'],c:0,exp:'Google owns YouTube. YouTube has billions of users. Search + video = massive revenue.'},
+    {q:'What makes Tesla (TSLA) unique?',a:['Electric vehicles + energy storage','Cheapest car prices','Oldest car company','Luxury brand only'],c:0,exp:'Tesla revolutionized EVs. Elon Musk vision = sustainable energy future.'},
+    {q:'What is the Fed?',a:['Federal Reserve - controls interest rates','Federal police','Football federation','Federated companies'],c:0,exp:'Fed = US central bank. When Fed raises rates, borrowing is expensive. Stock market can fall.'},
+    {q:'What is inflation?',a:['Rising prices of goods over time','Blowing up a balloon','Stock price increase','Money supply decrease'],c:0,exp:'Inflation = ₪100 today = ₪90 value next year. Why investing beats keeping cash!'},
+    {q:'What is a recession?',a:['Two consecutive quarters of declining GDP','Short market dip','Seasonal downturn','Temporary slowdown'],c:0,exp:'Recession = economic contraction. Companies earn less. But recessions are temporary!'},
+    {q:'What is a stock buyback?',a:['Company buys back its own shares','Returning merchandise','Stock exchange','Repayment program'],c:0,exp:'Buyback = company uses cash to reduce share count. Remaining shares = more valuable!'},
+    {q:'What is earnings per share (EPS)?',a:['Company profit ÷ number of shares','Employee payment system','Entry price schedule','Economic projection score'],c:0,exp:'EPS = important metric. Higher EPS = more profitable per share. Compare across companies!'},
+    {q:'What is a resistance level?',a:['Price where stock keeps bouncing down','Physical resistance','Stubborn seller','Technical support'],c:0,exp:'Resistance = price ceiling. Stock struggles to break above it. Support = price floor.'},
+    {q:'What is sentiment analysis?',a:['Reading company financial statements','Market mood + investor feelings','Emotional trading','News analysis'],c:0,exp:'Sentiment = fear/greed in market. Positive news = greed = stock up. Negative = fear = stock down.'},
+    {q:'What is dollar-cost averaging?',a:['Investing same amount monthly','Calculating currency exchange','Money management','Stock pricing method'],c:0,exp:'DCA = invest consistently regardless of price. Removes emotion. Great for long-term success!'},
+    {q:'What is the most important rule for beginners?',a:['Buy quality, diversify, stay calm','Buy penny stocks for quick profits','Trade daily for income','Invest all savings at once'],c:0,exp:'Quality + Diversification + Time = Success. Don\'t rush. Boring strategy wins long-term!'},
 ];
 
 function renderQuiz() {
@@ -1798,6 +1864,68 @@ function openTradeModal(stock) {
 function closeTradeModal() {
     document.getElementById('tradeModal').classList.remove('show');
     currentStock = null;
+}
+
+let currentDetailStock = null;
+let priceChartInstance = null;
+
+function openStockDetail(stock) {
+    currentDetailStock = stock;
+    document.getElementById('detailIcon').textContent = stock.icon;
+    document.getElementById('detailName').textContent = stock.name;
+    document.getElementById('detailDesc').textContent = desc(stock.symbol);
+    document.getElementById('detailPrice').textContent = `₪${stock.price.toFixed(2)}`;
+
+    const change = stock.changePercent || 0;
+    const changeEl = document.getElementById('detailChange');
+    changeEl.textContent = `${change>=0?'+':''}${change.toFixed(2)}%`;
+    changeEl.style.color = change>=0 ? '#00b09b' : '#ff416c';
+
+    document.getElementById('stockDetailModal').classList.add('show');
+
+    // Draw chart
+    setTimeout(drawPriceChart, 100);
+}
+
+function drawPriceChart() {
+    if (!currentDetailStock || !priceHistory[currentDetailStock.symbol]) return;
+    const data = priceHistory[currentDetailStock.symbol];
+    const ctx = document.getElementById('priceChart');
+    if (!ctx) return;
+
+    if (priceChartInstance) priceChartInstance.destroy();
+    priceChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map((_, i) => `${i}h`),
+            datasets: [{
+                label: 'Price (NIS)',
+                data: data,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: '#667eea'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: false } }
+        }
+    });
+}
+
+function closeDetailModal() {
+    document.getElementById('stockDetailModal').classList.remove('show');
+    currentDetailStock = null;
+}
+
+function openTradeModalFromDetail() {
+    closeDetailModal();
+    if (currentDetailStock) openTradeModal(currentDetailStock);
 }
 
 function adjustQty(delta) {
