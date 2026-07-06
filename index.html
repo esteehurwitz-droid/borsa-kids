@@ -814,6 +814,7 @@
     <!-- TABS -->
     <div class="tabs">
         <button class="tab active" onclick="showTab('market',this)" id="tabMarket">🏪 שוק</button>
+        <button class="tab" onclick="showTab('challenges',this)" id="tabChallenges">🎯 משימות</button>
         <button class="tab" onclick="showTab('indices',this)" id="tabIndices">📊 מדדים</button>
         <button class="tab" onclick="showTab('portfolio',this)" id="tabPortfolio">💼 תיק</button>
         <button class="tab" onclick="showTab('leaderboard',this)" id="tabLeaderboard">🏆 ליגה</button>
@@ -828,6 +829,26 @@
             <div class="event-banner" id="eventBanner"></div>
             <div class="sector-filter" id="sectorFilter"></div>
             <div id="stockList"></div>
+        </div>
+
+        <!-- CHALLENGES -->
+        <div id="challenges" class="tab-content hidden">
+            <div style="padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:12px;margin-bottom:12px;text-align:center">
+                <div style="font-weight:bold;font-size:18px">🎯 Your Challenges</div>
+                <div style="font-size:12px;opacity:0.9;margin-top:4px" id="tierBadge">Bronze Tier 🥉</div>
+            </div>
+            <div style="margin-bottom:16px">
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">📅 Daily Quests</div>
+                <div id="dailyChallenges" style="display:grid;gap:8px"></div>
+            </div>
+            <div style="margin-bottom:16px">
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">📊 Weekly Missions</div>
+                <div id="weeklyChallenges" style="display:grid;gap:8px"></div>
+            </div>
+            <div>
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">👑 Seasonal Goals</div>
+                <div id="seasonalChallenges" style="display:grid;gap:8px"></div>
+            </div>
         </div>
 
         <!-- INDICES -->
@@ -1040,7 +1061,7 @@ const T = {
         marketOpen:'שוק פתוח', marketNight:'שוק רגוע (לילה)',
         lblCash:'מזומן זמין', lblGameCode:'קוד המשחק שלך',
         btnPlayWithFriend:'👥 שחק עם חבר',
-        tabMarket:'🏪 שוק', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
+        tabMarket:'🏪 שוק', tabChallenges:'🎯 משימות', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
         learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
         quizCorrect:'✅ תשובה נכונה! +50 XP', quizWrong:'❌ תשובה לא נכונה',
@@ -1144,7 +1165,7 @@ const T = {
         marketOpen:'Market Open', marketNight:'Market Quiet (Night)',
         lblCash:'Available Cash', lblGameCode:'Your Game Code',
         btnPlayWithFriend:'👥 Play with Friend',
-        tabMarket:'🏪 Market', tabPortfolio:'💼 Portfolio',
+        tabMarket:'🏪 Market', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
         tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
         lblPortfolioVal:'Portfolio Value', lblProfitLoss:'Profit / Loss', lblStocks:'Stocks',
         emptyPortfolio:'Your portfolio is empty<br>Buy your first stock!',
@@ -1471,6 +1492,98 @@ function renderAvatarGrid() {
 }
 
 let currentTutorialScreen = 0;
+
+// ════════════════════════════════════════════════════════
+//  GAME PROGRESSION SYSTEM
+// ════════════════════════════════════════════════════════
+
+const CHALLENGES = {
+    daily: [
+        {id:'d1',title:'🏪 Market Explorer',desc:'View 3+ stocks',reward:100,check:()=>Object.keys(portfolio).length >= 1,icon:'🔍'},
+        {id:'d2',title:'💰 First Trade',desc:'Buy a stock',reward:150,check:()=>Object.keys(portfolio).length >= 1,icon:'🟢'},
+        {id:'d3',title:'📈 Price Watcher',desc:'Check the Market tab',reward:50,check:()=>sessionStorage.getItem('visitedMarket')==='true',icon:'📊'},
+        {id:'d4',title:'🧠 Quiz Master',desc:'Answer 3 quiz questions',reward:200,check:()=>parseInt(sessionStorage.getItem('quizzesCompleted')||0)>=3,icon:'✅'},
+        {id:'d5',title:'📚 Lesson Learner',desc:'Read 2 lessons',reward:100,check:()=>parseInt(sessionStorage.getItem('lessonsRead')||0)>=2,icon:'📖'},
+    ],
+    weekly: [
+        {id:'w1',title:'🌟 Portfolio Builder',desc:'Own 5 different stocks',reward:500,check:()=>Object.keys(portfolio).length >= 5,icon:'🎯'},
+        {id:'w2',title:'💎 Diversifier',desc:'Own stocks from 3+ sectors',reward:400,check:()=>{const s=new Set(Object.values(portfolio).map(p=>p.sector));return s.size>=3},icon:'🌈'},
+        {id:'w3',title:'📈 Profit Quest',desc:'Make ₪500 profit',reward:600,check:()=>calculatePortfolioValue().profit>=500,icon:'💰'},
+        {id:'w4',title:'🏆 League Climber',desc:'Gain 500 XP this week',reward:700,icon:'⭐'},
+        {id:'w5',title:'🎓 Education Week',desc:'Complete 5 quizzes',reward:800,check:()=>parseInt(sessionStorage.getItem('quizzesCompleted')||0)>=5,icon:'🎓'},
+    ],
+    seasonal: [
+        {id:'s1',title:'🚀 Stock Master',desc:'Own 15 stocks',reward:2000,check:()=>Object.keys(portfolio).length >= 15,icon:'🎯'},
+        {id:'s2',title:'💎 Million Maker',desc:'Get portfolio to ₪150,000',reward:3000,check:()=>calculatePortfolioValue().total >= 150000,icon:'💰'},
+        {id:'s3',title:'🏅 Level 6 Master',desc:'Reach Level 6: Little Buffett',reward:5000,check:()=>playerLevel >= 5,icon:'👑'},
+        {id:'s4',title:'🌍 Global Trader',desc:'Trade all 6 market indices',reward:2500,icon:'🌐'},
+    ]
+};
+
+const LEAGUES = {
+    tiers: [
+        {name:'Bronze',icon:'🥉',minXP:0,maxXP:999,rewards:100},
+        {name:'Silver',icon:'🥈',minXP:1000,maxXP:4999,rewards:250},
+        {name:'Gold',icon:'🥇',minXP:5000,maxXP:14999,rewards:500},
+        {name:'Platinum',icon:'💎',minXP:15000,maxXP:49999,rewards:1000},
+        {name:'Diamond',icon:'👑',minXP:50000,maxXP:Infinity,rewards:2000},
+    ]
+};
+
+function getPlayerTier() {
+    return LEAGUES.tiers.find(t => playerXP >= t.minXP && playerXP < t.maxXP) || LEAGUES.tiers[0];
+}
+
+function calculatePortfolioValue() {
+    let total = playerCash;
+    let invested = 0;
+    let profit = 0;
+
+    Object.entries(portfolio).forEach(([sym, holding]) => {
+        const stock = stocks.find(s => s.symbol === sym);
+        if (stock) {
+            const value = holding.qty * stock.price;
+            total += value;
+            invested += holding.qty * holding.avgPrice;
+            profit += value - (holding.qty * holding.avgPrice);
+        }
+    });
+
+    return {total, invested, profit, cash: playerCash};
+}
+
+function completeChallenge(challengeId) {
+    const allChallenges = [...CHALLENGES.daily, ...CHALLENGES.weekly, ...CHALLENGES.seasonal];
+    const challenge = allChallenges.find(c => c.id === challengeId);
+    if (!challenge) return;
+
+    const completed = JSON.parse(localStorage.getItem('completedChallenges') || '[]');
+    if (!completed.includes(challengeId)) {
+        completed.push(challengeId);
+        localStorage.setItem('completedChallenges', JSON.stringify(completed));
+        addXP(challenge.reward);
+        showNotif(`✅ Challenge Complete: +${challenge.reward} XP!`);
+    }
+}
+
+function getActiveChallenges() {
+    const daily = CHALLENGES.daily.filter(c => !isChallengeDone(c.id));
+    const weekly = CHALLENGES.weekly.filter(c => !isChallengeDone(c.id));
+    return {daily, weekly};
+}
+
+function isChallengeDone(id) {
+    return JSON.parse(localStorage.getItem('completedChallenges') || '[]').includes(id);
+}
+
+function checkChallengeCompletion() {
+    const active = getActiveChallenges();
+    [...active.daily, ...active.weekly].forEach(c => {
+        if (c.check && c.check()) {
+            completeChallenge(c.id);
+        }
+    });
+}
 
 function startGame() {
     const input = document.getElementById('playerNameInput');
@@ -2282,7 +2395,49 @@ function showTab(name, btn) {
     if (name==='leaderboard') renderLeaderboard();
     if (name==='indices') { fetchIndicesData(); }
     if (name==='market') { renderStocks(); }
+    if (name==='challenges') { renderChallenges(); }
 }
+
+function renderChallenges() {
+    const tier = getPlayerTier();
+    document.getElementById('tierBadge').textContent = `${tier.name} ${tier.icon} • ${playerXP} XP`;
+
+    // Daily
+    const dailyDiv = document.getElementById('dailyChallenges');
+    dailyDiv.innerHTML = '';
+    CHALLENGES.daily.forEach(c => renderChallengeCard(c, dailyDiv));
+
+    // Weekly
+    const weeklyDiv = document.getElementById('weeklyChallenges');
+    weeklyDiv.innerHTML = '';
+    CHALLENGES.weekly.forEach(c => renderChallengeCard(c, weeklyDiv));
+
+    // Seasonal
+    const seasonalDiv = document.getElementById('seasonalChallenges');
+    seasonalDiv.innerHTML = '';
+    CHALLENGES.seasonal.forEach(c => renderChallengeCard(c, seasonalDiv));
+}
+
+function renderChallengeCard(challenge, container) {
+    const done = isChallengeDone(challenge.id);
+    const el = document.createElement('div');
+    el.style.cssText = `background:#f8f9fa;padding:12px;border-radius:12px;border-left:4px solid ${done?'#00b09b':'var(--accent)'};opacity:${done?0.6:1}`;
+
+    el.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+                <div style="font-weight:bold;font-size:14px">${challenge.icon} ${challenge.title}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px">${challenge.desc}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-weight:bold;color:var(--gold)">+${challenge.reward} XP</div>
+                <button onclick="completeChallenge('${challenge.id}')" style="margin-top:4px;padding:4px 8px;background:${done?'#ddd':'var(--green)'};color:white;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;opacity:${done?0.5:1}">${done?'✅ Done':'Claim'}</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(el);
+}
+
 
 function showNotification(msg, type='success') {
     const el = document.getElementById('notification');
