@@ -91,14 +91,19 @@ stocksBase.forEach(stock => {
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Fetch real price from IEX Cloud API (free tier available)
- * Get free API key at: https://iexcloud.io/console/tokens
+ * Fetch real price from Finnhub API (free tier available)
+ * Using the API key already configured in your .env file
  */
 function fetchRealPrice(symbol) {
   return new Promise((resolve) => {
-    // Try IEX Cloud API (free tier includes real-time quotes)
-    const iexApiKey = process.env.IEX_API_KEY || 'pk_test0e8d1e3d6f4a7c2b5e9d1a4f7c0b3e6'; // Public test token
-    const url = `https://cloud.iexapis.com/stable/stock/${symbol}/quote?token=${iexApiKey}`;
+    // Use Finnhub API with the key already in your .env file
+    const finnhubKey = FINNHUB_API_KEY;
+    if (finnhubKey === 'demo') {
+      resolve(null); // Can't use demo mode, skip this call
+      return;
+    }
+
+    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${finnhubKey}`;
 
     https.get(url, (res) => {
       let data = '';
@@ -106,11 +111,12 @@ function fetchRealPrice(symbol) {
       res.on('end', () => {
         try {
           const json = JSON.parse(data);
-          if (json && json.latestPrice) {
+          // Finnhub response: c=current price, d=change, dp=percent change
+          if (json && json.c && json.c > 0) {
             resolve({
-              price: json.latestPrice,
-              change: json.change || 0,
-              changePercent: json.changePercent ? (json.changePercent * 100) : 0,
+              price: json.c,
+              change: json.d || 0,
+              changePercent: json.dp || 0,
             });
           } else {
             resolve(null);
