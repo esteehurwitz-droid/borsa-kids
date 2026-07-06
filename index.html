@@ -1542,7 +1542,10 @@ let currentStock = null;
 let activeSectorIdx = 0;
 let sessionCode = generateCode();
 let connectedPlayers = [];
-let currentLang = 'he';
+// Detect browser language or default to English
+let currentLang = navigator.language?.startsWith('he') ? 'he' :
+                 navigator.language?.startsWith('ar') ? 'ar' :
+                 navigator.language?.startsWith('ru') ? 'ru' : 'en';
 let playerName = '';
 let playerAvatar = '🦁';
 let selectedAvatarIdx = 0;
@@ -2652,10 +2655,9 @@ function showCourseOptions(courseKey) {
         const completed = completedCourses[course.id];
         html += `
             <div onclick="startCourse('${course.id}')"
-                style="padding:12px;background:${completed?'#d4edda':'#fff3cd'};border:2px solid #ddd;border-radius:8px;cursor:pointer;text-align:center"
+                style="padding:12px;background:${completed?'#d4edda':'#fff3cd'};border:2px solid #ddd;border-radius:8px;cursor:pointer;text-align:center;transition:all 0.2s"
                 onmouseover="this.style.transform='scale(1.05)'"
-                onmouseout="this.style.transform='scale(1)'"
-                style="transition:all 0.2s">
+                onmouseout="this.style.transform='scale(1)'">
                 <div style="font-weight:bold;font-size:12px">${level.toUpperCase()}</div>
                 <div style="font-size:11px;color:#666">${course.duration} min</div>
                 <div style="font-size:11px;margin-top:4px">+${course.xpReward} XP</div>
@@ -2934,8 +2936,8 @@ function init() {
         setLang(currentLang);
         console.log('✅ Main app shown');
     } else {
-        setLang('he');
-        console.log('🆕 New game - Hebrew onboarding shown');
+        setLang(currentLang);
+        console.log('🆕 New game - Onboarding shown in', currentLang);
     }
 
     // Fetch live prices immediately, then every 60 seconds
