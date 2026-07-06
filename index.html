@@ -664,6 +664,76 @@
 
         .hidden { display: none; }
 
+        /* ── TUTORIAL ── */
+        .tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s;
+        }
+
+        .tutorial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 420px;
+            width: 90vw;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .tutorial-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .tutorial-close:hover { color: #000; }
+
+        .tutorial-content {
+            margin-top: 20px;
+            line-height: 1.6;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .tutorial-content h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .tutorial-content .tut-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .tutorial-content .tut-step {
+            background: rgba(102, 126, 234, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 4px solid var(--accent);
+            font-size: 13px;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         @media (max-width: 440px) {
             .container { border-radius: 0; min-height: 100vh; }
             .modal-sheet { max-width: 100%; }
@@ -941,6 +1011,18 @@
     </div>
 </div>
 
+<!-- TUTORIAL MODAL -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+    <div class="tutorial-card">
+        <div class="tutorial-close" onclick="skipTutorial()">✕</div>
+        <div class="tutorial-content" id="tutorialContent"></div>
+        <div style="display:flex;gap:8px;margin-top:20px">
+            <button onclick="prevTutorialScreen()" id="btnPrevTutorial" style="flex:1;padding:10px;background:#ddd;border:none;border-radius:8px;cursor:pointer;font-weight:bold;display:none">← אחורה</button>
+            <button onclick="nextTutorialScreen()" id="btnNextTutorial" style="flex:1;padding:10px;background:var(--green);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold">הבא →</button>
+        </div>
+    </div>
+</div>
+
 <!-- ACHIEVEMENT TOAST -->
 <div class="achievement-toast" id="achievementToast"></div>
 <!-- NOTIFICATION -->
@@ -966,6 +1048,12 @@ const T = {
         newsTitle:'📰 חדשות בורסה בזמן אמת',
         newsLoading:'⏳ טוען חדשות שוק...',
         newsError:'📡 החדשות זמינות בsites השוק',
+        tutorialScreens:[
+            {title:'🎮 ברוכה הבאה!', icon:'🎯', text:'אתה בגן השעשועים של כסף! זה משחק לימוד בו אתה משחק בעסקים באמצעות ₪100,000 <b>כסף דמיוני</b> (לא אמיתי - אל דאגו!).'},
+            {title:'📈 מה זה מניות?', icon:'📊', text:'מניה היא חלק קטן מחברה. כשאתה קונה מניה, אתה הופך לבעלים! אם החברה זוכה → אתה מרוויח! אם היא מפסידה → אתה מפסיד (אבל בכסף דמיוני בלבד).'},
+            {title:'💡 XP = חוכמה', icon:'⭐', text:'תשובו שאלות, קנו מניות, קיבלו רווחים = <b>XP!</b> כשתצברו XP מספיק, אתם עולים לרמה גבוהה יותר! רמה 1: משקיע מתחיל • רמה 6: וורן באפט קטן!'},
+            {title:'🚀 בואו נתחילו!', icon:'🎉', text:'לחצו על <b>Market 🏪</b> לקנות את המניה הראשונה שלכם. ראו מחירים חיים, תיווך עם חברים, קראו שיעורים - הכל למד!'},
+        ],
         lblPortfolioVal:'שווי תיק', lblProfitLoss:'רווח/הפסד', lblStocks:'מניות',
         emptyPortfolio:'התיק שלך ריק<br>קנה את המניה הראשונה שלך!',
         lblCurrentPrice:'מחיר נוכחי', lblTotalCost:'עלות כוללת',
@@ -1101,6 +1189,12 @@ const T = {
             {text:'🎮 Roblox breaks user record!',affected:['RBLX','U'],factor:1.12},
             {text:'☀️ Heat wave – solar energy surges',affected:['ENPH','PLUG'],factor:1.1},
             {text:'💳 Visa reports record profit',affected:['V','JPM'],factor:1.04},
+        ],
+        tutorialScreens:[
+            {title:'🎮 Welcome!', icon:'🎯', text:'Welcome to the Money Playground! This is a learning game where you trade stocks using <b>₪100,000 of pretend money</b> (not real – don\'t worry!).'},
+            {title:'📈 What are Stocks?', icon:'📊', text:'A stock is a tiny piece of a company. When you buy a stock, you become a part-owner! If the company wins → you profit! If it loses → you lose (but with fake money only).'},
+            {title:'💡 XP = Knowledge', icon:'⭐', text:'Answer questions, buy stocks, make profits = <b>XP!</b> Collect enough XP and you level up! Level 1: Beginner • Level 6: Little Buffett!'},
+            {title:'🚀 Let\'s Go!', icon:'🎉', text:'Tap <b>Market 🏪</b> to buy your first stock. See live prices, trade with friends, read lessons – all for learning!'},
         ],
         learn:[
             {icon:'🎯',title:'What are Stocks?',text:"A stock is a tiny piece of a company. When you buy a stock, you become a part-owner! If the company earns money – so do you."},
@@ -1376,6 +1470,8 @@ function renderAvatarGrid() {
     });
 }
 
+let currentTutorialScreen = 0;
+
 function startGame() {
     const input = document.getElementById('playerNameInput');
     const name = input.value.trim();
@@ -1383,8 +1479,70 @@ function startGame() {
     playerName = name;
     playerAvatar = AVATARS[selectedAvatarIdx];
     document.getElementById('onboarding').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
     setLang(currentLang);
+    showTutorial();
+}
+
+function showTutorial() {
+    currentTutorialScreen = 0;
+    renderTutorialScreen();
+    document.getElementById('tutorialOverlay').style.display = 'flex';
+}
+
+function renderTutorialScreen() {
+    const tr = t();
+    const screens = tr.tutorialScreens || [];
+    if (screens.length === 0) { skipTutorial(); return; }
+
+    const screen = screens[currentTutorialScreen];
+    const html = `
+        <div class="tut-icon">${screen.icon}</div>
+        <h2>${screen.title}</h2>
+        <div class="tutorial-content" style="font-size:15px;line-height:1.6">
+            ${screen.text}
+        </div>
+        <div style="text-align:center;margin-top:16px;color:#999;font-size:12px">
+            ${currentTutorialScreen + 1} / ${screens.length}
+        </div>
+    `;
+
+    document.getElementById('tutorialContent').innerHTML = html;
+
+    // Show/hide prev button
+    const btnPrev = document.getElementById('btnPrevTutorial');
+    if (btnPrev) btnPrev.style.display = currentTutorialScreen > 0 ? 'block' : 'none';
+
+    // Update next button text
+    const btnNext = document.getElementById('btnNextTutorial');
+    if (btnNext) {
+        btnNext.textContent = currentTutorialScreen === screens.length - 1
+            ? (tr.ob_btn || '🚀 Start!')
+            : (tr.ob_btn ? '→' : 'Next →');
+    }
+}
+
+function nextTutorialScreen() {
+    const tr = t();
+    const screens = tr.tutorialScreens || [];
+
+    if (currentTutorialScreen < screens.length - 1) {
+        currentTutorialScreen++;
+        renderTutorialScreen();
+    } else {
+        skipTutorial();
+    }
+}
+
+function prevTutorialScreen() {
+    if (currentTutorialScreen > 0) {
+        currentTutorialScreen--;
+        renderTutorialScreen();
+    }
+}
+
+function skipTutorial() {
+    document.getElementById('tutorialOverlay').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
     saveState();
 }
 
