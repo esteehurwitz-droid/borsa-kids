@@ -815,6 +815,7 @@
     <div class="tabs">
         <button class="tab active" onclick="showTab('market',this)" id="tabMarket">🏪 שוק</button>
         <button class="tab" onclick="showTab('watchlist',this)" id="tabWatchlist">❤️ עדכוני מחירים</button>
+        <button class="tab" onclick="showTab('courses',this)" id="tabCourses">📖 קורסים</button>
         <button class="tab" onclick="showTab('challenges',this)" id="tabChallenges">🎯 משימות</button>
         <button class="tab" onclick="showTab('indices',this)" id="tabIndices">📊 מדדים</button>
         <button class="tab" onclick="showTab('portfolio',this)" id="tabPortfolio">💼 תיק</button>
@@ -845,6 +846,22 @@
                 <div style="font-size:12px;opacity:0.9;margin-top:4px" id="watchlistHint">Star stocks to follow their live prices here</div>
             </div>
             <div id="watchlistContent" style="display:grid;gap:8px"></div>
+        </div>
+
+        <!-- MINI COURSES -->
+        <div id="courses" class="tab-content hidden">
+            <div style="padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:12px;margin-bottom:12px;text-align:center">
+                <div style="font-weight:bold;font-size:14px" id="coursesTitle">📖 Free Mini Courses</div>
+                <div style="font-size:12px;opacity:0.9;margin-top:4px" id="coursesHint">Learn investing at your own pace. Choose quick, standard, or deep dive courses.</div>
+            </div>
+            <div style="margin-bottom:12px">
+                <div style="font-weight:bold;font-size:12px;margin-bottom:8px" id="selectCourseLabel">Select a Course:</div>
+                <div id="coursesMenu" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+            </div>
+            <div id="courseContent" style="display:none">
+                <button onclick="backToCourseMenu()" style="margin-bottom:12px;padding:8px 12px;background:#ddd;border:none;border-radius:6px;cursor:pointer;font-weight:bold">← Back</button>
+                <div id="courseDetails" style="background:#f9f9f9;padding:12px;border-radius:8px"></div>
+            </div>
         </div>
 
         <!-- CHALLENGES -->
@@ -1077,8 +1094,9 @@ const T = {
         marketOpen:'שוק פתוח', marketNight:'שוק רגוע (לילה)',
         lblCash:'מזומן זמין', lblGameCode:'קוד המשחק שלך',
         btnPlayWithFriend:'👥 שחק עם חבר',
-        tabMarket:'🏪 שוק', tabWatchlist:'❤️ עדכוני מחירים', tabChallenges:'🎯 משימות', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
+        tabMarket:'🏪 שוק', tabWatchlist:'❤️ עדכוני מחירים', tabCourses:'📖 קורסים', tabChallenges:'🎯 משימות', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
+        coursesTitle:'📖 קורסים חינם', coursesHint:'למדו השקעות בקצב שלכם. בחרו קורסים קצרים, סטנדרטיים או מעמיקים.', selectCourseLabel:'בחרו קורס:',
         watchlistTitle:'❤️ רשימת המעקב שלי', watchlistHint:'הוסף מניות למעקב על ידי לחיצה על ❤️', watchlistEmpty:'אין מניות במעקב. לחץ על ❤️ לצפייה במחירים חיים!', removeFromWatchlist:'הסר מעקב ❤️',
         learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
         gameObjectiveTitle:'🎯 המשימה שלך', gameObjectiveText:'בנה תיק רווחי • השלם משימות יומיות • עלה לרמת Diamond • סחור עם חברים ותחרה!',
@@ -1188,8 +1206,9 @@ const T = {
         marketOpen:'Market Open', marketNight:'Market Quiet (Night)',
         lblCash:'Available Cash', lblGameCode:'Your Game Code',
         btnPlayWithFriend:'👥 Play with Friend',
-        tabMarket:'🏪 Market', tabWatchlist:'❤️ Watchlist', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
+        tabMarket:'🏪 Market', tabWatchlist:'❤️ Watchlist', tabCourses:'📖 Courses', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
         tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
+        coursesTitle:'📖 Free Mini Courses', coursesHint:'Learn investing at your own pace. Choose quick, standard, or deep dive courses.', selectCourseLabel:'Select a Course:',
         watchlistTitle:'❤️ My Watchlist', watchlistHint:'Star stocks to follow live prices', watchlistEmpty:'No favorites yet. Click ❤️ on stocks to add them!', removeFromWatchlist:'Remove ❤️',
         gameObjectiveTitle:'🎯 Your Mission', gameObjectiveText:'Build a profitable portfolio • Complete daily quests • Level up to Diamond • Trade with friends and compete!',
         yourChallenges:'🎯 Your Challenges', dailyQuests:'📅 Daily Quests', weeklyMissions:'📊 Weekly Missions', seasonalGoals:'👑 Seasonal Goals',
@@ -1280,8 +1299,9 @@ const T = {
         marketOpen:'السوق مفتوح', marketNight:'السوق هادئ (الليل)',
         lblCash:'النقد المتاح', lblGameCode:'رمز لعبتك',
         btnPlayWithFriend:'👥 العب مع صديق',
-        tabMarket:'🏪 السوق', tabWatchlist:'❤️ قائمة المتابعة', tabChallenges:'🎯 التحديات', tabIndices:'📊 المؤشرات', tabPortfolio:'💼 المحفظة',
+        tabMarket:'🏪 السوق', tabWatchlist:'❤️ قائمة المتابعة', tabCourses:'📖 الدورات', tabChallenges:'🎯 التحديات', tabIndices:'📊 المؤشرات', tabPortfolio:'💼 المحفظة',
         tabLeaderboard:'🏆 الترتيب', tabFuture:'⏳ المستقبل', tabLearn:'📚 تعلّم',
+        coursesTitle:'📖 دورات مجانية', coursesHint:'تعلم الاستثمار بسرعتك الخاصة. اختر دورات قصيرة أو معيارية أو متعمقة.', selectCourseLabel:'اختر دورة:',
         watchlistTitle:'❤️ قائمتي المراقبة', watchlistHint:'اضغط على ❤️ لمتابعة الأسهم الحية', watchlistEmpty:'لا توجد تحت المراقبة. اضغط على ❤️ لإضافة الأسهم!', removeFromWatchlist:'إزالة من المراقبة ❤️',
         gameObjectiveTitle:'🎯 مهمتك', gameObjectiveText:'بناء محفظة مربحة • إكمال التحديات اليومية • الوصول إلى مستوى الماس • التداول مع الأصدقاء والتنافس!',
         yourChallenges:'🎯 تحدياتك', dailyQuests:'📅 التحديات اليومية', weeklyMissions:'📊 التحديات الأسبوعية', seasonalGoals:'👑 الأهداف الموسمية',
@@ -1356,8 +1376,9 @@ const T = {
         marketOpen:'Рынок открыт', marketNight:'Рынок спокоен (ночь)',
         lblCash:'Доступные средства', lblGameCode:'Код игры',
         btnPlayWithFriend:'👥 Играть с другом',
-        tabMarket:'🏪 Рынок', tabWatchlist:'❤️ Мои акции', tabChallenges:'🎯 Задачи', tabIndices:'📊 Индексы', tabPortfolio:'💼 Портфель',
+        tabMarket:'🏪 Рынок', tabWatchlist:'❤️ Мои акции', tabCourses:'📖 Курсы', tabChallenges:'🎯 Задачи', tabIndices:'📊 Индексы', tabPortfolio:'💼 Портфель',
         tabLeaderboard:'🏆 Рейтинг', tabFuture:'⏳ Будущее', tabLearn:'📚 Учиться',
+        coursesTitle:'📖 Бесплатные курсы', coursesHint:'Учитесь инвестировать в своем темпе. Выбирайте быстрые, стандартные или глубокие курсы.', selectCourseLabel:'Выберите курс:',
         watchlistTitle:'❤️ Мой список наблюдения', watchlistHint:'Нажмите ❤️ чтобы отслеживать цены в реальном времени', watchlistEmpty:'Нет избранных. Нажмите ❤️ чтобы добавить акции!', removeFromWatchlist:'Удалить из списка ❤️',
         gameObjectiveTitle:'🎯 Ваша миссия', gameObjectiveText:'Соберите прибыльный портфель • Выполняйте ежедневные задачи • Достигните уровня Алмаз • Торгуйте с друзьями и соревнуйтесь!',
         yourChallenges:'🎯 Ваши задачи', dailyQuests:'📅 Ежедневные задачи', weeklyMissions:'📊 Еженедельные задачи', seasonalGoals:'👑 Сезонные цели',
@@ -1516,6 +1537,7 @@ stocks.forEach(s => { priceHistory[s.symbol] = [s.price]; });
 let balance = 100000;
 let portfolio = {};
 let watchlist = {}; // {symbol: true/false} for favorites
+let completedCourses = {}; // {courseId: true/false}
 let currentStock = null;
 let activeSectorIdx = 0;
 let sessionCode = generateCode();
@@ -1531,7 +1553,7 @@ let earnedBadges = {};
 //  PERSISTENCE (localStorage)
 // ════════════════════════════════════════════════════════
 function saveState() {
-    const state = {balance, portfolio, watchlist, xp, earnedBadges,
+    const state = {balance, portfolio, watchlist, completedCourses, xp, earnedBadges,
         playerName, playerAvatar, currentLang,
         stocks: stocks.map(s => ({symbol:s.symbol, price:s.price}))
     };
@@ -1546,6 +1568,7 @@ function loadState() {
         balance = s.balance ?? 100000;
         portfolio = s.portfolio ?? {};
         watchlist = s.watchlist ?? {};
+        completedCourses = s.completedCourses ?? {};
         xp = s.xp ?? 0;
         earnedBadges = s.earnedBadges ?? {};
         playerName = s.playerName ?? '';
@@ -1610,6 +1633,99 @@ const CHALLENGES = {
         {id:'s4',title:'🌍 Global Trader',desc:'Trade all 6 market indices',reward:2500,icon:'🌐'},
     ]
 };
+
+// ════════════════════════════════════════════════════════
+//  MINI COURSES DATABASE
+// ════════════════════════════════════════════════════════
+const MINI_COURSES = {
+    basics: {
+        quick: {
+            id:'basics-quick', title:'What Are Stocks?', length:'quick', duration:5, difficulty:1,
+            topics:['Stock definition','Company ownership','How prices work','Real example: Apple'],
+            xpReward:50
+        },
+        standard: {
+            id:'basics-standard', title:'What Are Stocks?', length:'standard', duration:15, difficulty:2,
+            topics:['Stock types','Price factors','Growth vs Value','Multiple examples'],
+            xpReward:100
+        },
+        deep: {
+            id:'basics-deep', title:'What Are Stocks?', length:'deep', duration:30, difficulty:3,
+            topics:['IPO process','Stock splits','Dividends','Historical data','Case studies'],
+            xpReward:200
+        }
+    },
+    portfolio: {
+        quick: {
+            id:'portfolio-quick', title:'Building Your Portfolio', length:'quick', duration:5, difficulty:1,
+            topics:['Portfolio definition','Why diversify','Basic rules'],
+            xpReward:50
+        },
+        standard: {
+            id:'portfolio-standard', title:'Building Your Portfolio', length:'standard', duration:15, difficulty:2,
+            topics:['Asset allocation','Diversification','How many stocks?','Examples'],
+            xpReward:100
+        },
+        deep: {
+            id:'portfolio-deep', title:'Building Your Portfolio', length:'deep', duration:30, difficulty:3,
+            topics:['Warren Buffett strategy','Dollar-cost averaging','Rebalancing','Tax strategies'],
+            xpReward:200
+        }
+    },
+    risk: {
+        quick: {
+            id:'risk-quick', title:'Understanding Risk', length:'quick', duration:5, difficulty:1,
+            topics:['What is risk?','Risk vs reward','Only invest what you can lose'],
+            xpReward:50
+        },
+        standard: {
+            id:'risk-standard', title:'Understanding Risk', length:'standard', duration:15, difficulty:2,
+            topics:['Risk types','Volatility','Stop-loss orders','Real examples'],
+            xpReward:100
+        },
+        deep: {
+            id:'risk-deep', title:'Understanding Risk', length:'deep', duration:30, difficulty:3,
+            topics:['Beta coefficient','Sharpe ratio','Historical crashes','Recovery patterns'],
+            xpReward:200
+        }
+    },
+    charts: {
+        quick: {
+            id:'charts-quick', title:'Chart Patterns for Beginners', length:'quick', duration:5, difficulty:1,
+            topics:['Trending up/down','Support & resistance basics'],
+            xpReward:50
+        },
+        standard: {
+            id:'charts-standard', title:'Chart Patterns for Beginners', length:'standard', duration:15, difficulty:2,
+            topics:['Moving averages','Volume','Simple patterns','Live examples'],
+            xpReward:100
+        },
+        deep: {
+            id:'charts-deep', title:'Chart Patterns for Beginners', length:'deep', duration:30, difficulty:3,
+            topics:['Advanced patterns','Technical indicators','Fibonacci','Case studies'],
+            xpReward:200
+        }
+    },
+    news: {
+        quick: {
+            id:'news-quick', title:'How News Affects Stocks', length:'quick', duration:5, difficulty:1,
+            topics:['Good news = up','Bad news = down','Earnings matter'],
+            xpReward:50
+        },
+        standard: {
+            id:'news-standard', title:'How News Affects Stocks', length:'standard', duration:15, difficulty:2,
+            topics:['News types','Earnings season','Fed decisions','2024 examples'],
+            xpReward:100
+        },
+        deep: {
+            id:'news-deep', title:'How News Affects Stocks', length:'deep', duration:30, difficulty:3,
+            topics:['Sentiment analysis','News timing','Geopolitical events','Research'],
+            xpReward:200
+        }
+    }
+};
+
+let completedCourses = {};
 
 const LEAGUES = {
     tiers: [
@@ -1771,7 +1887,7 @@ function setLang(lang) {
     const ni = document.getElementById('playerNameInput');
     if (ni) ni.placeholder = t.ob_placeholder;
 
-    const ids = ['lblCash','lblGameCode','btnPlayWithFriend','tabMarket','tabWatchlist','tabChallenges','tabIndices','tabPortfolio',
+    const ids = ['lblCash','lblGameCode','btnPlayWithFriend','tabMarket','tabWatchlist','tabCourses','tabChallenges','tabIndices','tabPortfolio',
         'tabLeaderboard','tabFuture','tabLearn','lblPortfolioVal','lblProfitLoss','lblStocks',
         'lblCurrentPrice','lblTotalCost','btnCancel','connectTitle','connectSubtitle',
         'ctabShare','ctabJoin','lblYourCode','shareHint','joinHint','btnJoin','btnCloseConnect',
@@ -1779,6 +1895,7 @@ function setLang(lang) {
         'calcTip1Title','calcTip1Text','calcTip2Title','calcTip2Text',
         'gameObjectiveTitle','gameObjectiveText',
         'watchlistTitle','watchlistHint',
+        'coursesTitle','coursesHint','selectCourseLabel',
         'yourChallengesHeader','dailyQuestsHeader','weeklyMissionsHeader','seasonalGoalsHeader',
         'tabLessons','tabQuiz','tabNews',
         'detailPriceLabel','detailChangeLabel','tradeStockBtn','detailCloseBtn'];
@@ -1808,6 +1925,7 @@ function setLang(lang) {
     renderSectors();
     renderStocks();
     renderWatchlist();
+    renderCoursesMenu();
     renderPortfolio();
     renderLeaderboard();
     renderChallenges();
@@ -2492,6 +2610,118 @@ function joinFriend() {
 }
 
 // ════════════════════════════════════════════════════════
+//  MINI COURSES
+// ════════════════════════════════════════════════════════
+function renderCoursesMenu() {
+    const menu = document.getElementById('coursesMenu');
+    menu.innerHTML = '';
+
+    const courseList = [
+        {key:'basics', name:'📚 What Are Stocks?'},
+        {key:'portfolio', name:'🎯 Building Portfolios'},
+        {key:'risk', name:'⚠️ Understanding Risk'},
+        {key:'charts', name:'📈 Reading Charts'},
+        {key:'news', name:'📰 News & Markets'}
+    ];
+
+    courseList.forEach(course => {
+        menu.innerHTML += `
+            <button onclick="showCourseOptions('${course.key}')"
+                style="padding:12px;background:#f0f0f0;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:bold;text-align:center;transition:all 0.2s"
+                onmouseover="this.style.background='#e0e0e0'"
+                onmouseout="this.style.background='#f0f0f0'">
+                ${course.name}
+            </button>
+        `;
+    });
+}
+
+function showCourseOptions(courseKey) {
+    const menu = document.getElementById('coursesMenu');
+    const details = document.getElementById('courseDetails');
+
+    menu.style.display = 'none';
+    document.getElementById('courseContent').style.display = 'block';
+
+    const courses = MINI_COURSES[courseKey];
+    let html = `<h3 style="margin:0 0 12px 0">${Object.values(courses)[0].title}</h3>`;
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">`;
+
+    ['quick','standard','deep'].forEach(level => {
+        const course = courses[level];
+        const completed = completedCourses[course.id];
+        html += `
+            <div onclick="startCourse('${course.id}')"
+                style="padding:12px;background:${completed?'#d4edda':'#fff3cd'};border:2px solid #ddd;border-radius:8px;cursor:pointer;text-align:center"
+                onmouseover="this.style.transform='scale(1.05)'"
+                onmouseout="this.style.transform='scale(1)'"
+                style="transition:all 0.2s">
+                <div style="font-weight:bold;font-size:12px">${level.toUpperCase()}</div>
+                <div style="font-size:11px;color:#666">${course.duration} min</div>
+                <div style="font-size:11px;margin-top:4px">+${course.xpReward} XP</div>
+                ${completed?'<div style="font-size:11px;color:#28a745">✅ Done</div>':''}
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    details.innerHTML = html;
+}
+
+function startCourse(courseId) {
+    const allCourses = Object.values(MINI_COURSES).flatMap(cat => Object.values(cat));
+    const course = allCourses.find(c => c.id === courseId);
+
+    if (!course) return;
+
+    const details = document.getElementById('courseDetails');
+    const completed = completedCourses[courseId];
+
+    let topicsHtml = '<div style="margin:12px 0"><strong>Topics Covered:</strong><ul style="margin:8px 0;padding-left:20px">';
+    course.topics.forEach(topic => {
+        topicsHtml += `<li>${topic}</li>`;
+    });
+    topicsHtml += '</ul></div>';
+
+    details.innerHTML = `
+        <h3 style="margin:0 0 8px 0">${course.title}</h3>
+        <div style="font-size:12px;color:#666;margin-bottom:12px">
+            <span style="background:#e0e0e0;padding:2px 6px;border-radius:4px;margin-right:6px">${course.length}</span>
+            <span style="background:#e0e0e0;padding:2px 6px;border-radius:4px">${course.duration} minutes</span>
+        </div>
+        ${topicsHtml}
+        <div style="margin:12px 0;padding:12px;background:#f0f0f0;border-radius:8px;font-size:12px">
+            <strong>Difficulty:</strong> ${'⭐'.repeat(course.difficulty)}
+        </div>
+        <button onclick="completeCourse('${courseId}')"
+            style="width:100%;padding:12px;background:${completed?'#28a745':'#667eea'};color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:14px">
+            ${completed?'✅ Completed':'Complete Course & Earn '+course.xpReward+' XP'}
+        </button>
+    `;
+}
+
+function completeCourse(courseId) {
+    if (completedCourses[courseId]) return;
+
+    const allCourses = Object.values(MINI_COURSES).flatMap(cat => Object.values(cat));
+    const course = allCourses.find(c => c.id === courseId);
+
+    if (!course) return;
+
+    completedCourses[courseId] = true;
+    addXP(course.xpReward);
+    showNotification(`🎓 Course Complete! +${course.xpReward} XP`, 'success');
+
+    saveState();
+    startCourse(courseId);
+}
+
+function backToCourseMenu() {
+    document.getElementById('coursesMenu').style.display = 'grid';
+    document.getElementById('courseContent').style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
 //  WATCHLIST / FAVORITES
 // ════════════════════════════════════════════════════════
 function toggleWatchlist(symbol) {
@@ -2542,6 +2772,7 @@ function showTab(name, btn) {
     if (name==='indices') { fetchIndicesData(); }
     if (name==='market') { renderStocks(); }
     if (name==='watchlist') { renderWatchlist(); }
+    if (name==='courses') { renderCoursesMenu(); }
     if (name==='challenges') { renderChallenges(); }
 }
 
