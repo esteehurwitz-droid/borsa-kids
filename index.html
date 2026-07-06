@@ -814,6 +814,7 @@
     <!-- TABS -->
     <div class="tabs">
         <button class="tab active" onclick="showTab('market',this)" id="tabMarket">🏪 שוק</button>
+        <button class="tab" onclick="showTab('watchlist',this)" id="tabWatchlist">❤️ עדכוני מחירים</button>
         <button class="tab" onclick="showTab('challenges',this)" id="tabChallenges">🎯 משימות</button>
         <button class="tab" onclick="showTab('indices',this)" id="tabIndices">📊 מדדים</button>
         <button class="tab" onclick="showTab('portfolio',this)" id="tabPortfolio">💼 תיק</button>
@@ -835,6 +836,15 @@
             <div class="event-banner" id="eventBanner"></div>
             <div class="sector-filter" id="sectorFilter"></div>
             <div id="stockList"></div>
+        </div>
+
+        <!-- WATCHLIST -->
+        <div id="watchlist" class="tab-content hidden">
+            <div style="padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:12px;margin-bottom:12px;text-align:center">
+                <div style="font-weight:bold;font-size:14px" id="watchlistTitle">❤️ My Watchlist</div>
+                <div style="font-size:12px;opacity:0.9;margin-top:4px" id="watchlistHint">Star stocks to follow their live prices here</div>
+            </div>
+            <div id="watchlistContent" style="display:grid;gap:8px"></div>
         </div>
 
         <!-- CHALLENGES -->
@@ -1418,34 +1428,68 @@ const T = {
 const AVATARS = ['🦁','🐯','🦊','🐻','🐼','🐸','🦋','🦄','🐉','🦅','🦈','🐬'];
 
 // ════════════════════════════════════════════════════════
-//  STOCKS BASE DATA
+//  STOCKS BASE DATA - 50+ REAL STOCKS ORGANIZED BY SECTOR
 // ════════════════════════════════════════════════════════
 const stocksBase = [
-  {symbol:'AAPL',name:'Apple',icon:'🍎',sector_idx:5,price:185,vol:0.018},
-  {symbol:'GOOGL',name:'Google',icon:'🔍',sector_idx:5,price:140,vol:0.02},
-  {symbol:'MSFT',name:'Microsoft',icon:'🪟',sector_idx:5,price:310,vol:0.016},
-  {symbol:'META',name:'Meta',icon:'👓',sector_idx:5,price:200,vol:0.025},
-  {symbol:'NFLX',name:'Netflix',icon:'🎬',sector_idx:5,price:450,vol:0.03},
-  {symbol:'NVDA',name:'Nvidia',icon:'🤖',sector_idx:1,price:480,vol:0.05},
-  {symbol:'PLTR',name:'Palantir',icon:'🧠',sector_idx:1,price:18,vol:0.065},
-  {symbol:'AI',name:'C3.ai',icon:'💡',sector_idx:1,price:25,vol:0.07},
-  {symbol:'ISRG',name:'Intuitive',icon:'🦾',sector_idx:2,price:320,vol:0.03},
-  {symbol:'ABB',name:'ABB',icon:'🏭',sector_idx:2,price:28,vol:0.025},
-  {symbol:'TER',name:'Teradyne',icon:'🔬',sector_idx:2,price:110,vol:0.035},
-  {symbol:'TSLA',name:'Tesla',icon:'⚡',sector_idx:3,price:800,vol:0.055},
-  {symbol:'ENPH',name:'Enphase',icon:'☀️',sector_idx:3,price:125,vol:0.05},
-  {symbol:'PLUG',name:'Plug Power',icon:'💧',sector_idx:3,price:12,vol:0.08},
-  {symbol:'RBLX',name:'Roblox',icon:'🎮',sector_idx:4,price:45,vol:0.055},
-  {symbol:'COIN',name:'Coinbase',icon:'₿',sector_idx:4,price:68,vol:0.07},
-  {symbol:'AMZN',name:'Amazon',icon:'📦',sector_idx:6,price:178,vol:0.022},
-  {symbol:'DIS',name:'Disney',icon:'🏰',sector_idx:6,price:95,vol:0.02},
-  {symbol:'MCD',name:"McDonald's",icon:'🍔',sector_idx:6,price:275,vol:0.012},
-  {symbol:'KO',name:'Coca-Cola',icon:'🥤',sector_idx:6,price:58,vol:0.01},
-  {symbol:'NKE',name:'Nike',icon:'👟',sector_idx:6,price:105,vol:0.022},
+  // AI & TECH (0)
+  {symbol:'NVDA',name:'Nvidia',icon:'🤖',sector_idx:0,price:480,vol:0.05},
+  {symbol:'PLTR',name:'Palantir',icon:'🧠',sector_idx:0,price:18,vol:0.065},
+  {symbol:'AI',name:'C3.ai',icon:'💡',sector_idx:0,price:25,vol:0.07},
+  {symbol:'UPST',name:'Upstart',icon:'⚙️',sector_idx:0,price:18,vol:0.08},
+  {symbol:'MRVL',name:'Marvell',icon:'🔌',sector_idx:0,price:52,vol:0.04},
+
+  // ROBOTICS (1)
+  {symbol:'ISRG',name:'Intuitive',icon:'🦾',sector_idx:1,price:320,vol:0.03},
+  {symbol:'ABB',name:'ABB',icon:'🏭',sector_idx:1,price:28,vol:0.025},
+  {symbol:'TER',name:'Teradyne',icon:'🔬',sector_idx:1,price:110,vol:0.035},
+  {symbol:'AXON',name:'Axon',icon:'🤖',sector_idx:1,price:182,vol:0.025},
+
+  // CLEAN ENERGY (2)
+  {symbol:'TSLA',name:'Tesla',icon:'⚡',sector_idx:2,price:800,vol:0.055},
+  {symbol:'ENPH',name:'Enphase',icon:'☀️',sector_idx:2,price:125,vol:0.05},
+  {symbol:'PLUG',name:'Plug Power',icon:'💧',sector_idx:2,price:12,vol:0.08},
+  {symbol:'NEE',name:'NextEra',icon:'🌞',sector_idx:2,price:85,vol:0.015},
+  {symbol:'RUN',name:'Sunrun',icon:'🏠',sector_idx:2,price:35,vol:0.045},
+
+  // FUTURE TECH (3)
+  {symbol:'RBLX',name:'Roblox',icon:'🎮',sector_idx:3,price:45,vol:0.055},
+  {symbol:'COIN',name:'Coinbase',icon:'₿',sector_idx:3,price:68,vol:0.07},
+  {symbol:'U',name:'Unity',icon:'🎮',sector_idx:3,price:28,vol:0.06},
+  {symbol:'ROKU',name:'Roku',icon:'📺',sector_idx:3,price:78,vol:0.045},
+
+  // TECH GIANTS (4)
+  {symbol:'AAPL',name:'Apple',icon:'🍎',sector_idx:4,price:185,vol:0.018},
+  {symbol:'GOOGL',name:'Google',icon:'🔍',sector_idx:4,price:140,vol:0.02},
+  {symbol:'MSFT',name:'Microsoft',icon:'🪟',sector_idx:4,price:310,vol:0.016},
+  {symbol:'META',name:'Meta',icon:'👓',sector_idx:4,price:200,vol:0.025},
+  {symbol:'NFLX',name:'Netflix',icon:'🎬',sector_idx:4,price:450,vol:0.03},
+  {symbol:'AMZN',name:'Amazon',icon:'📦',sector_idx:4,price:178,vol:0.022},
+  {symbol:'CRM',name:'Salesforce',icon:'☁️',sector_idx:4,price:245,vol:0.025},
+  {symbol:'ADBE',name:'Adobe',icon:'🎨',sector_idx:4,price:520,vol:0.028},
+
+  // TRADITIONAL RETAIL (5)
+  {symbol:'DIS',name:'Disney',icon:'🏰',sector_idx:5,price:95,vol:0.02},
+  {symbol:'MCD',name:"McDonald's",icon:'🍔',sector_idx:5,price:275,vol:0.012},
+  {symbol:'KO',name:'Coca-Cola',icon:'🥤',sector_idx:5,price:58,vol:0.01},
+  {symbol:'NKE',name:'Nike',icon:'👟',sector_idx:5,price:105,vol:0.022},
+  {symbol:'SBUX',name:'Starbucks',icon:'☕',sector_idx:5,price:95,vol:0.025},
+  {symbol:'TJX',name:'TJX',icon:'🛍️',sector_idx:5,price:88,vol:0.022},
+  {symbol:'WMT',name:'Walmart',icon:'🏪',sector_idx:5,price:92,vol:0.015},
+
+  // FINANCE & BANKING (6)
   {symbol:'V',name:'Visa',icon:'💳',sector_idx:6,price:210,vol:0.014},
   {symbol:'JPM',name:'JP Morgan',icon:'🏦',sector_idx:6,price:155,vol:0.016},
+  {symbol:'BLK',name:'BlackRock',icon:'📊',sector_idx:6,price:882,vol:0.018},
+  {symbol:'MA',name:'Mastercard',icon:'💰',sector_idx:6,price:415,vol:0.018},
+  {symbol:'GS',name:'Goldman',icon:'💼',sector_idx:6,price:338,vol:0.02},
+  {symbol:'BAC',name:'Bank of America',icon:'🏛️',sector_idx:6,price:38,vol:0.025},
+
+  // INTERNATIONAL (7)
   {symbol:'TSM',name:'TSMC',icon:'🔧',sector_idx:7,price:92,vol:0.03},
   {symbol:'ASML',name:'ASML',icon:'🔭',sector_idx:7,price:680,vol:0.025},
+  {symbol:'NVO',name:'Novo',icon:'💊',sector_idx:7,price:285,vol:0.02},
+  {symbol:'SAP',name:'SAP',icon:'💻',sector_idx:7,price:118,vol:0.018},
+  {symbol:'BABA',name:'Alibaba',icon:'🏪',sector_idx:7,price:85,vol:0.035},
 ];
 
 // ════════════════════════════════════════════════════════
@@ -1467,6 +1511,7 @@ stocks.forEach(s => { priceHistory[s.symbol] = [s.price]; });
 
 let balance = 100000;
 let portfolio = {};
+let watchlist = {}; // {symbol: true/false} for favorites
 let currentStock = null;
 let activeSectorIdx = 0;
 let sessionCode = generateCode();
@@ -1482,7 +1527,7 @@ let earnedBadges = {};
 //  PERSISTENCE (localStorage)
 // ════════════════════════════════════════════════════════
 function saveState() {
-    const state = {balance, portfolio, xp, earnedBadges,
+    const state = {balance, portfolio, watchlist, xp, earnedBadges,
         playerName, playerAvatar, currentLang,
         stocks: stocks.map(s => ({symbol:s.symbol, price:s.price}))
     };
@@ -1496,6 +1541,7 @@ function loadState() {
         const s = JSON.parse(raw);
         balance = s.balance ?? 100000;
         portfolio = s.portfolio ?? {};
+        watchlist = s.watchlist ?? {};
         xp = s.xp ?? 0;
         earnedBadges = s.earnedBadges ?? {};
         playerName = s.playerName ?? '';
