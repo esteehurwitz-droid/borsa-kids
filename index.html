@@ -1942,7 +1942,9 @@ function setLang(lang) {
 //  PLAYER UI / XP / LEVELS
 // ════════════════════════════════════════════════════════
 function updatePlayerUI() {
-    document.getElementById('playerAvatarDisp').textContent = playerAvatar;
+    const avatar = document.getElementById('playerAvatarDisp');
+    if (!avatar) return;
+    avatar.textContent = playerAvatar;
     document.getElementById('playerNameDisp').textContent = playerName;
     const levels = T[currentLang].levelNames;
     const levelIdx = Math.min(Math.floor(xp / 100), levels.length - 1);
@@ -2430,7 +2432,9 @@ function updateHeader() {
 //  FUTURE CALCULATOR
 // ════════════════════════════════════════════════════════
 function updateCalc() {
-    const monthly = parseFloat(document.getElementById('sliderMonthly').value);
+    const monthlySlider = document.getElementById('sliderMonthly');
+    if (!monthlySlider) return;
+    const monthly = parseFloat(monthlySlider.value);
     const years = parseFloat(document.getElementById('sliderYears').value);
     const rate = parseFloat(document.getElementById('sliderReturn').value) / 100;
 
@@ -2617,6 +2621,7 @@ function joinFriend() {
 // ════════════════════════════════════════════════════════
 function renderCoursesMenu() {
     const menu = document.getElementById('coursesMenu');
+    if (!menu) return;
     menu.innerHTML = '';
 
     const courseList = [
@@ -2735,6 +2740,7 @@ function toggleWatchlist(symbol) {
 
 function renderWatchlist() {
     const container = document.getElementById('watchlistContent');
+    if (!container) return;
     const watched = stocks.filter(s => watchlist[s.symbol]);
 
     if (watched.length === 0) {
@@ -2779,11 +2785,14 @@ function showTab(name, btn) {
 }
 
 function renderChallenges() {
+    const tierEl = document.getElementById('tierBadge');
+    if (!tierEl) return;
     const tier = getPlayerTier();
-    document.getElementById('tierBadge').textContent = `${tier.name} ${tier.icon} • ${playerXP} XP`;
+    tierEl.textContent = `${tier.name} ${tier.icon} • ${playerXP} XP`;
 
     // Daily
     const dailyDiv = document.getElementById('dailyChallenges');
+    if (!dailyDiv) return;
     dailyDiv.innerHTML = '';
     CHALLENGES.daily.forEach(c => renderChallengeCard(c, dailyDiv));
 
