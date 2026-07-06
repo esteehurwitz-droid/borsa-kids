@@ -1797,20 +1797,41 @@ function checkChallengeCompletion() {
 }
 
 function startGame() {
-    const input = document.getElementById('playerNameInput');
-    const name = input.value.trim();
-    if (!name) { input.focus(); input.style.borderColor='#ff6b6b'; return; }
-    playerName = name;
-    playerAvatar = AVATARS[selectedAvatarIdx];
-    document.getElementById('onboarding').style.display = 'none';
-    setLang(currentLang);
-    showTutorial();
+    try {
+        console.log('🎬 startGame() called');
+        const input = document.getElementById('playerNameInput');
+        if (!input) { console.error('❌ Name input not found'); return; }
+        const name = input.value.trim();
+        if (!name) { console.log('⚠️ Empty name'); input.focus(); input.style.borderColor='#ff6b6b'; return; }
+        playerName = name;
+        playerAvatar = AVATARS[selectedAvatarIdx];
+        console.log('👤 Player:', playerName, playerAvatar);
+        document.getElementById('onboarding').style.display = 'none';
+        console.log('👋 Onboarding hidden');
+        setLang(currentLang);
+        console.log('🌍 Language set:', currentLang);
+        showTutorial();
+        console.log('📖 Tutorial shown');
+    } catch (e) {
+        console.error('❌ startGame error:', e);
+        alert('Error: ' + e.message);
+    }
 }
 
 function showTutorial() {
-    currentTutorialScreen = 0;
-    renderTutorialScreen();
-    document.getElementById('tutorialOverlay').style.display = 'flex';
+    try {
+        console.log('📺 showTutorial() called');
+        currentTutorialScreen = 0;
+        renderTutorialScreen();
+        console.log('✏️ Tutorial screen rendered');
+        const overlay = document.getElementById('tutorialOverlay');
+        if (!overlay) { console.error('❌ tutorialOverlay not found'); return; }
+        overlay.style.display = 'flex';
+        console.log('✅ Tutorial overlay shown');
+    } catch (e) {
+        console.error('❌ showTutorial error:', e);
+        skipTutorial();
+    }
 }
 
 function renderTutorialScreen() {
