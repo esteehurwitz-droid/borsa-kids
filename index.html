@@ -1077,6 +1077,7 @@ const T = {
         currentPrice:'מחיר נוכחי', change24h:'שינוי 24 שעות', tradeStock:'🔵 סחור בעסקה זו', closeBtn:'סגור',
         quizCorrect:'✅ תשובה נכונה! +50 XP', quizWrong:'❌ תשובה לא נכונה',
         quizProgress:'שאלה', quizOf:'מתוך',
+        quizComplete:'✅ חידון הסתיים! 🎉', quizCompleteMsg:'עניתם על כל השאלות! המשיכו ללמוד!', quizExplanation:'💡 הסבר:',
         newsTitle:'📰 חדשות בורסה בזמן אמת',
         newsLoading:'⏳ טוען חדשות שוק...',
         newsError:'📡 החדשות זמינות בsites השוק',
@@ -1227,6 +1228,10 @@ const T = {
             {text:'☀️ Heat wave – solar energy surges',affected:['ENPH','PLUG'],factor:1.1},
             {text:'💳 Visa reports record profit',affected:['V','JPM'],factor:1.04},
         ],
+        quizCorrect:'✅ Correct! +50 XP', quizWrong:'❌ Wrong answer',
+        quizProgress:'Question', quizOf:'of',
+        quizComplete:'✅ Quiz Complete! 🎉', quizCompleteMsg:'You answered all questions! Keep learning!', quizExplanation:'💡 Explanation:',
+        newsTitle:'📰 Real Stock Market News', newsLoading:'📰 Loading real market news...', newsError:'📡 Real news temporarily unavailable.',
         tutorialScreens:[
             {title:'🎮 Welcome!', icon:'🎯', text:'Welcome to the Money Playground! This is a learning game where you trade stocks using <b>₪100,000 of pretend money</b> (not real – don\'t worry!).'},
             {title:'📈 What are Stocks?', icon:'📊', text:'A stock is a tiny piece of a company. When you buy a stock, you become a part-owner! If the company wins → you profit! If it loses → you lose (but with fake money only).'},
@@ -1295,6 +1300,10 @@ const T = {
         calcTip2Title:'😴 المال الخامل = مال ينقص',
         calcTip2Text:'بسبب التضخم، 100₪ اليوم تشتري أقل في المستقبل. إذا لم يُستثمر المال، يفقد قيمته دون أن تشعر.',
         calcSaved:(t,i)=>`من استثمار ₪${i.toLocaleString()} • الربح: ₪${(t-i).toLocaleString()}`,
+        quizCorrect:'✅ إجابة صحيحة! +50 XP', quizWrong:'❌ إجابة خاطئة',
+        quizProgress:'السؤال', quizOf:'من',
+        quizComplete:'✅ اكتمل الاختبار! 🎉', quizCompleteMsg:'لقد أجبت على جميع الأسئلة! استمر في التعلم!', quizExplanation:'💡 الشرح:',
+        newsTitle:'📰 أخبار سوق الأسهم الحقيقية', newsLoading:'📰 تحميل أخبار سوق الأسهم...', newsError:'📡 الأخبار غير متاحة حالياً.',
         lbTitle:'🏆 لوح الصدارة', lbYou:'(أنت)',
         achievements:{
             firstBuy:{icon:'🎯',title:'أول شراء!'},
@@ -1366,6 +1375,10 @@ const T = {
         calcTip2Title:'😴 Лежачие деньги = уменьшающиеся деньги',
         calcTip2Text:'Из-за инфляции ₪100 сегодня покупают меньше в будущем. Если деньги не инвестировать, они теряют ценность незаметно.',
         calcSaved:(t,i)=>`Из вложений ₪${i.toLocaleString()} • Прибыль: ₪${(t-i).toLocaleString()}`,
+        quizCorrect:'✅ Правильно! +50 XP', quizWrong:'❌ Неправильный ответ',
+        quizProgress:'Вопрос', quizOf:'из',
+        quizComplete:'✅ Викторина завершена! 🎉', quizCompleteMsg:'Вы ответили на все вопросы! Продолжайте учиться!', quizExplanation:'💡 Объяснение:',
+        newsTitle:'📰 Реальные новости фондового рынка', newsLoading:'📰 Загрузка новостей рынка...', newsError:'📡 Новости временно недоступны.',
         lbTitle:'🏆 Таблица лидеров', lbYou:'(вы)',
         achievements:{
             firstBuy:{icon:'🎯',title:'Первая покупка!'},
@@ -2165,20 +2178,23 @@ const quizData = [
 
 function renderQuiz() {
     const container = document.getElementById('quizContent');
+    const trans = T[currentLang];
     const qIdx = parseInt(sessionStorage.getItem('currentQuiz') || 0);
     const q = quizData[qIdx];
     if (!q) {
-        const txt = t().quizOf || 'Quiz Complete!';
-        container.innerHTML = `<div style="text-align:center;padding:20px"><h2>✅ חידון הסתיים! 🎉</h2><p>עניתם על כל השאלות! המשיכו ללמוד!</p></div>`;
+        const title = trans.quizComplete || '✅ Quiz Complete! 🎉';
+        const msg = trans.quizCompleteMsg || 'You answered all questions! Keep learning!';
+        container.innerHTML = `<div style="text-align:center;padding:20px"><h2>${title}</h2><p>${msg}</p></div>`;
         return;
     }
-    const prog = t().quizProgress || 'Question';
+    const prog = trans.quizProgress || 'Question';
+    const explanationLabel = trans.quizExplanation || '💡 Explanation:';
     let html = `<div style="padding:15px"><div style="font-size:13px;color:#999;margin-bottom:10px">${prog} ${parseInt(qIdx)+1}/${quizData.length}</div>`;
     html += `<h3 style="margin:15px 0">${q.q}</h3>`;
     q.a.forEach((ans,i) => {
         html += `<button onclick="answerQuiz(${i})" style="display:block;width:100%;padding:12px;margin:8px 0;border:2px solid #ddd;border-radius:8px;background:#f9f9f9;cursor:pointer;text-align:left">● ${ans}</button>`;
     });
-    html += `<div style="margin-top:15px;padding:10px;background:#f0f0f0;border-radius:8px;font-size:12px;color:#666"><b>💡 הסבר:</b> ${q.exp}</div>`;
+    html += `<div style="margin-top:15px;padding:10px;background:#f0f0f0;border-radius:8px;font-size:12px;color:#666"><b>${explanationLabel}</b> ${q.exp}</div>`;
     html += '</div>';
     container.innerHTML = html;
 }
