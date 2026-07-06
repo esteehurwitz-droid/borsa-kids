@@ -750,7 +750,7 @@
 
     <div class="avatar-grid" id="avatarGrid"></div>
 
-    <input class="name-input" id="playerNameInput" maxlength="14">
+    <input class="name-input" id="playerNameInput" maxlength="14" placeholder="Your name...">
 
     <button class="start-btn" onclick="startGame()" id="ob-btn">🚀 בואו נתחיל!</button>
 </div>
@@ -1503,6 +1503,7 @@ function loadState() {
 // ════════════════════════════════════════════════════════
 function renderAvatarGrid() {
     const grid = document.getElementById('avatarGrid');
+    if (!grid) { console.error('❌ avatarGrid not found'); return; }
     grid.innerHTML = '';
     AVATARS.forEach((av, i) => {
         const el = document.createElement('div');
@@ -1515,6 +1516,7 @@ function renderAvatarGrid() {
         };
         grid.appendChild(el);
     });
+    console.log('✅ Avatars rendered:', AVATARS.length, 'avatars');
 }
 
 let currentTutorialScreen = 0;
@@ -2577,21 +2579,28 @@ function updateLiveIndicator(isLive) {
 //  INIT
 // ════════════════════════════════════════════════════════
 function init() {
+    console.log('🎮 Game initializing...');
     renderAvatarGrid();
-    document.getElementById('sessionCode').textContent = sessionCode;
-    document.getElementById('modalCode').textContent = sessionCode;
+    const sc = document.getElementById('sessionCode');
+    const mc = document.getElementById('modalCode');
+    if (sc) sc.textContent = sessionCode;
+    if (mc) mc.textContent = sessionCode;
 
     const hasSession = loadState();
+    console.log('📦 Session loaded:', hasSession);
 
     if (hasSession) {
         document.getElementById('onboarding').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
         setLang(currentLang);
+        console.log('✅ Main app shown');
     } else {
         setLang('he');
+        console.log('🆕 New game - Hebrew onboarding shown');
     }
 
     // Fetch live prices immediately, then every 60 seconds
+    console.log('📊 Fetching live prices...');
     fetchLivePrices();
     setInterval(fetchLivePrices, 60000);
 
