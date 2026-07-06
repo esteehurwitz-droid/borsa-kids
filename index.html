@@ -834,19 +834,19 @@
         <!-- CHALLENGES -->
         <div id="challenges" class="tab-content hidden">
             <div style="padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:12px;margin-bottom:12px;text-align:center">
-                <div style="font-weight:bold;font-size:18px">🎯 Your Challenges</div>
+                <div style="font-weight:bold;font-size:18px" id="yourChallengesHeader">🎯 Your Challenges</div>
                 <div style="font-size:12px;opacity:0.9;margin-top:4px" id="tierBadge">Bronze Tier 🥉</div>
             </div>
             <div style="margin-bottom:16px">
-                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">📅 Daily Quests</div>
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px" id="dailyQuestsHeader">📅 Daily Quests</div>
                 <div id="dailyChallenges" style="display:grid;gap:8px"></div>
             </div>
             <div style="margin-bottom:16px">
-                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">📊 Weekly Missions</div>
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px" id="weeklyMissionsHeader">📊 Weekly Missions</div>
                 <div id="weeklyChallenges" style="display:grid;gap:8px"></div>
             </div>
             <div>
-                <div style="font-weight:bold;font-size:14px;margin-bottom:8px">👑 Seasonal Goals</div>
+                <div style="font-weight:bold;font-size:14px;margin-bottom:8px" id="seasonalGoalsHeader">👑 Seasonal Goals</div>
                 <div id="seasonalChallenges" style="display:grid;gap:8px"></div>
             </div>
         </div>
@@ -928,9 +928,9 @@
         <!-- LEARN -->
         <div id="learn" class="tab-content hidden">
             <div style="display:flex;gap:8px;margin-bottom:16px">
-                <button class="tab-sub active" onclick="showLearnTab('lessons',this)" style="flex:1" id="tabLessons">📚 Lessons</button>
-                <button class="tab-sub" onclick="showLearnTab('quiz',this)" style="flex:1" id="tabQuiz">🧠 Quiz</button>
-                <button class="tab-sub" onclick="showLearnTab('news',this)" style="flex:1" id="tabNews">📰 News</button>
+                <button class="tab-sub active" onclick="showLearnTab('lessons',this)" style="flex:1" id="tabLessons" data-i18n="lessonTabText">📚 Lessons</button>
+                <button class="tab-sub" onclick="showLearnTab('quiz',this)" style="flex:1" id="tabQuiz" data-i18n="quizTabText">🧠 Quiz</button>
+                <button class="tab-sub" onclick="showLearnTab('news',this)" style="flex:1" id="tabNews" data-i18n="newsTabText">📰 News</button>
             </div>
             <div id="lessonsTab" class="learn-tab">
                 <div id="learnContent"></div>
@@ -962,16 +962,16 @@
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12px">
             <div style="background:#f0f9ff;padding:8px;border-radius:8px;text-align:center">
-                <div style="color:#666">Current Price</div>
+                <div style="color:#666" id="detailPriceLabel">Current Price</div>
                 <div id="detailPrice" style="font-weight:bold;font-size:16px">₪0</div>
             </div>
             <div style="background:#f9f0ff;padding:8px;border-radius:8px;text-align:center">
-                <div style="color:#666">24h Change</div>
+                <div style="color:#666" id="detailChangeLabel">24h Change</div>
                 <div id="detailChange" style="font-weight:bold;font-size:14px">+0%</div>
             </div>
         </div>
-        <button class="btn btn-buy" onclick="openTradeModalFromDetail()" style="width:100%;margin-bottom:8px">🔵 Trade This Stock</button>
-        <button class="btn btn-cancel" onclick="closeDetailModal()">Close</button>
+        <button class="btn btn-buy" onclick="openTradeModalFromDetail()" style="width:100%;margin-bottom:8px" id="tradeStockBtn">🔵 Trade This Stock</button>
+        <button class="btn btn-cancel" onclick="closeDetailModal()" id="detailCloseBtn">Close</button>
     </div>
 </div>
 
@@ -1064,6 +1064,10 @@ const T = {
         tabMarket:'🏪 שוק', tabChallenges:'🎯 משימות', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
         learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
+        yourChallenges:'🎯 המשימות שלך', dailyQuests:'📅 משימות יומיות', weeklyMissions:'📊 משימות שבועיות', seasonalGoals:'👑 יעדים עונתיים',
+        claimBtn:'קבל', doneBtn:'✅ סיום',
+        lessonTabText:'📚 שיעורים', quizTabText:'🧠 חידון', newsTabText:'📰 חדשות',
+        currentPrice:'מחיר נוכחי', change24h:'שינוי 24 שעות', tradeStock:'🔵 סחור בעסקה זו', closeBtn:'סגור',
         quizCorrect:'✅ תשובה נכונה! +50 XP', quizWrong:'❌ תשובה לא נכונה',
         quizProgress:'שאלה', quizOf:'מתוך',
         newsTitle:'📰 חדשות בורסה בזמן אמת',
@@ -1167,6 +1171,10 @@ const T = {
         btnPlayWithFriend:'👥 Play with Friend',
         tabMarket:'🏪 Market', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
         tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
+        yourChallenges:'🎯 Your Challenges', dailyQuests:'📅 Daily Quests', weeklyMissions:'📊 Weekly Missions', seasonalGoals:'👑 Seasonal Goals',
+        claimBtn:'Claim', doneBtn:'✅ Done',
+        lessonTabText:'📚 Lessons', quizTabText:'🧠 Quiz', newsTabText:'📰 News',
+        currentPrice:'Current Price', change24h:'24h Change', tradeStock:'🔵 Trade This Stock', closeBtn:'Close',
         lblPortfolioVal:'Portfolio Value', lblProfitLoss:'Profit / Loss', lblStocks:'Stocks',
         emptyPortfolio:'Your portfolio is empty<br>Buy your first stock!',
         lblCurrentPrice:'Current Price', lblTotalCost:'Total Cost',
@@ -1247,8 +1255,12 @@ const T = {
         marketOpen:'السوق مفتوح', marketNight:'السوق هادئ (الليل)',
         lblCash:'النقد المتاح', lblGameCode:'رمز لعبتك',
         btnPlayWithFriend:'👥 العب مع صديق',
-        tabMarket:'🏪 السوق', tabPortfolio:'💼 المحفظة',
+        tabMarket:'🏪 السوق', tabChallenges:'🎯 التحديات', tabIndices:'📊 المؤشرات', tabPortfolio:'💼 المحفظة',
         tabLeaderboard:'🏆 الترتيب', tabFuture:'⏳ المستقبل', tabLearn:'📚 تعلّم',
+        yourChallenges:'🎯 تحدياتك', dailyQuests:'📅 التحديات اليومية', weeklyMissions:'📊 التحديات الأسبوعية', seasonalGoals:'👑 الأهداف الموسمية',
+        claimBtn:'احصل', doneBtn:'✅ تم',
+        lessonTabText:'📚 الدروس', quizTabText:'🧠 الاختبار', newsTabText:'📰 الأخبار',
+        currentPrice:'السعر الحالي', change24h:'التغيير (24 ساعة)', tradeStock:'🔵 تداول هذا السهم', closeBtn:'إغلاق',
         lblPortfolioVal:'قيمة المحفظة', lblProfitLoss:'الربح/الخسارة', lblStocks:'الأسهم',
         emptyPortfolio:'محفظتك فارغة<br>اشتر سهمك الأول!',
         lblCurrentPrice:'السعر الحالي', lblTotalCost:'التكلفة الإجمالية',
@@ -1313,8 +1325,12 @@ const T = {
         marketOpen:'Рынок открыт', marketNight:'Рынок спокоен (ночь)',
         lblCash:'Доступные средства', lblGameCode:'Код игры',
         btnPlayWithFriend:'👥 Играть с другом',
-        tabMarket:'🏪 Рынок', tabPortfolio:'💼 Портфель',
+        tabMarket:'🏪 Рынок', tabChallenges:'🎯 Задачи', tabIndices:'📊 Индексы', tabPortfolio:'💼 Портфель',
         tabLeaderboard:'🏆 Рейтинг', tabFuture:'⏳ Будущее', tabLearn:'📚 Учиться',
+        yourChallenges:'🎯 Ваши задачи', dailyQuests:'📅 Ежедневные задачи', weeklyMissions:'📊 Еженедельные задачи', seasonalGoals:'👑 Сезонные цели',
+        claimBtn:'Получить', doneBtn:'✅ Готово',
+        lessonTabText:'📚 Уроки', quizTabText:'🧠 Викторина', newsTabText:'📰 Новости',
+        currentPrice:'Текущая цена', change24h:'Изменение за 24ч', tradeStock:'🔵 Торговать этой акцией', closeBtn:'Закрыть',
         lblPortfolioVal:'Стоимость портфеля', lblProfitLoss:'Прибыль/Убыток', lblStocks:'Акции',
         emptyPortfolio:'Портфель пуст<br>Купи свою первую акцию!',
         lblCurrentPrice:'Текущая цена', lblTotalCost:'Общая стоимость',
@@ -1680,16 +1696,25 @@ function setLang(lang) {
     const ni = document.getElementById('playerNameInput');
     if (ni) ni.placeholder = t.ob_placeholder;
 
-    const ids = ['lblCash','lblGameCode','btnPlayWithFriend','tabMarket','tabPortfolio',
+    const ids = ['lblCash','lblGameCode','btnPlayWithFriend','tabMarket','tabChallenges','tabIndices','tabPortfolio',
         'tabLeaderboard','tabFuture','tabLearn','lblPortfolioVal','lblProfitLoss','lblStocks',
         'lblCurrentPrice','lblTotalCost','btnCancel','connectTitle','connectSubtitle',
         'ctabShare','ctabJoin','lblYourCode','shareHint','joinHint','btnJoin','btnCloseConnect',
         'calcTitle','calcLblMonthly','calcLblYears','calcLblReturn',
-        'calcTip1Title','calcTip1Text','calcTip2Title','calcTip2Text'];
+        'calcTip1Title','calcTip1Text','calcTip2Title','calcTip2Text',
+        'yourChallengesHeader','dailyQuestsHeader','weeklyMissionsHeader','seasonalGoalsHeader',
+        'tabLessons','tabQuiz','tabNews',
+        'detailPriceLabel','detailChangeLabel','tradeStockBtn','detailCloseBtn'];
 
     ids.forEach(id => {
         const el = document.getElementById(id);
-        if (el && t[id] !== undefined) el.textContent = t[id];
+        if (el && t[id] !== undefined) {
+            if (el.dataset.i18n) {
+                el.textContent = t[el.dataset.i18n];
+            } else {
+                el.textContent = t[id];
+            }
+        }
     });
 
     document.getElementById('buyBtn').textContent = t.btnBuy;
@@ -1707,6 +1732,7 @@ function setLang(lang) {
     renderStocks();
     renderPortfolio();
     renderLeaderboard();
+    renderChallenges();
     renderLearn();
     updateCalc();
     renderBadges();
@@ -2420,6 +2446,7 @@ function renderChallenges() {
 
 function renderChallengeCard(challenge, container) {
     const done = isChallengeDone(challenge.id);
+    const trans = T[currentLang];
     const el = document.createElement('div');
     el.style.cssText = `background:#f8f9fa;padding:12px;border-radius:12px;border-left:4px solid ${done?'#00b09b':'var(--accent)'};opacity:${done?0.6:1}`;
 
@@ -2431,7 +2458,7 @@ function renderChallengeCard(challenge, container) {
             </div>
             <div style="text-align:right">
                 <div style="font-weight:bold;color:var(--gold)">+${challenge.reward} XP</div>
-                <button onclick="completeChallenge('${challenge.id}')" style="margin-top:4px;padding:4px 8px;background:${done?'#ddd':'var(--green)'};color:white;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;opacity:${done?0.5:1}">${done?'✅ Done':'Claim'}</button>
+                <button onclick="completeChallenge('${challenge.id}')" style="margin-top:4px;padding:4px 8px;background:${done?'#ddd':'var(--green)'};color:white;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;opacity:${done?0.5:1}">${done?trans.doneBtn:trans.claimBtn}</button>
             </div>
         </div>
     `;
