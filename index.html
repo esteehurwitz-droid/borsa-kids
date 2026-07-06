@@ -824,6 +824,12 @@
 
     <div class="content">
 
+        <!-- GAME OBJECTIVES BANNER -->
+        <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:14px;border-radius:12px;margin-bottom:12px;font-size:13px;line-height:1.5">
+            <div style="font-weight:bold;margin-bottom:6px;font-size:14px" id="gameObjectiveTitle">🎯 Your Mission</div>
+            <div id="gameObjectiveText">Build a profitable portfolio • Complete daily quests • Level up to Diamond tier • Trade with friends and compete!</div>
+        </div>
+
         <!-- MARKET -->
         <div id="market" class="tab-content">
             <div class="event-banner" id="eventBanner"></div>
@@ -1064,6 +1070,7 @@ const T = {
         tabMarket:'🏪 שוק', tabChallenges:'🎯 משימות', tabIndices:'📊 מדדים', tabPortfolio:'💼 תיק',
         tabLeaderboard:'🏆 ליגה', tabFuture:'⏳ עתיד', tabLearn:'📚 למד',
         learnLessons:'📚 שיעורים', learnQuiz:'🧠 חידון', learnNews:'📰 חדשות',
+        gameObjectiveTitle:'🎯 המשימה שלך', gameObjectiveText:'בנה תיק רווחי • השלם משימות יומיות • עלה לרמת Diamond • סחור עם חברים ותחרה!',
         yourChallenges:'🎯 המשימות שלך', dailyQuests:'📅 משימות יומיות', weeklyMissions:'📊 משימות שבועיות', seasonalGoals:'👑 יעדים עונתיים',
         claimBtn:'קבל', doneBtn:'✅ סיום',
         lessonTabText:'📚 שיעורים', quizTabText:'🧠 חידון', newsTabText:'📰 חדשות',
@@ -1171,6 +1178,7 @@ const T = {
         btnPlayWithFriend:'👥 Play with Friend',
         tabMarket:'🏪 Market', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
         tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
+        gameObjectiveTitle:'🎯 Your Mission', gameObjectiveText:'Build a profitable portfolio • Complete daily quests • Level up to Diamond • Trade with friends and compete!',
         yourChallenges:'🎯 Your Challenges', dailyQuests:'📅 Daily Quests', weeklyMissions:'📊 Weekly Missions', seasonalGoals:'👑 Seasonal Goals',
         claimBtn:'Claim', doneBtn:'✅ Done',
         lessonTabText:'📚 Lessons', quizTabText:'🧠 Quiz', newsTabText:'📰 News',
@@ -1257,6 +1265,7 @@ const T = {
         btnPlayWithFriend:'👥 العب مع صديق',
         tabMarket:'🏪 السوق', tabChallenges:'🎯 التحديات', tabIndices:'📊 المؤشرات', tabPortfolio:'💼 المحفظة',
         tabLeaderboard:'🏆 الترتيب', tabFuture:'⏳ المستقبل', tabLearn:'📚 تعلّم',
+        gameObjectiveTitle:'🎯 مهمتك', gameObjectiveText:'بناء محفظة مربحة • إكمال التحديات اليومية • الوصول إلى مستوى الماس • التداول مع الأصدقاء والتنافس!',
         yourChallenges:'🎯 تحدياتك', dailyQuests:'📅 التحديات اليومية', weeklyMissions:'📊 التحديات الأسبوعية', seasonalGoals:'👑 الأهداف الموسمية',
         claimBtn:'احصل', doneBtn:'✅ تم',
         lessonTabText:'📚 الدروس', quizTabText:'🧠 الاختبار', newsTabText:'📰 الأخبار',
@@ -1327,6 +1336,7 @@ const T = {
         btnPlayWithFriend:'👥 Играть с другом',
         tabMarket:'🏪 Рынок', tabChallenges:'🎯 Задачи', tabIndices:'📊 Индексы', tabPortfolio:'💼 Портфель',
         tabLeaderboard:'🏆 Рейтинг', tabFuture:'⏳ Будущее', tabLearn:'📚 Учиться',
+        gameObjectiveTitle:'🎯 Ваша миссия', gameObjectiveText:'Соберите прибыльный портфель • Выполняйте ежедневные задачи • Достигните уровня Алмаз • Торгуйте с друзьями и соревнуйтесь!',
         yourChallenges:'🎯 Ваши задачи', dailyQuests:'📅 Ежедневные задачи', weeklyMissions:'📊 Еженедельные задачи', seasonalGoals:'👑 Сезонные цели',
         claimBtn:'Получить', doneBtn:'✅ Готово',
         lessonTabText:'📚 Уроки', quizTabText:'🧠 Викторина', newsTabText:'📰 Новости',
@@ -1702,6 +1712,7 @@ function setLang(lang) {
         'ctabShare','ctabJoin','lblYourCode','shareHint','joinHint','btnJoin','btnCloseConnect',
         'calcTitle','calcLblMonthly','calcLblYears','calcLblReturn',
         'calcTip1Title','calcTip1Text','calcTip2Title','calcTip2Text',
+        'gameObjectiveTitle','gameObjectiveText',
         'yourChallengesHeader','dailyQuestsHeader','weeklyMissionsHeader','seasonalGoalsHeader',
         'tabLessons','tabQuiz','tabNews',
         'detailPriceLabel','detailChangeLabel','tradeStockBtn','detailCloseBtn'];
