@@ -1576,7 +1576,8 @@ function loadState() {
         earnedBadges = s.earnedBadges ?? {};
         playerName = s.playerName ?? '';
         playerAvatar = s.playerAvatar ?? '🦁';
-        currentLang = s.currentLang ?? 'he';
+        // Preserve saved language, don't force Hebrew
+        if (s.currentLang) currentLang = s.currentLang;
         if (s.stocks) {
             s.stocks.forEach(saved => {
                 const stock = stocks.find(st => st.symbol === saved.symbol);
