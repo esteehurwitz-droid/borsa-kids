@@ -1740,7 +1740,7 @@ const LEAGUES = {
 };
 
 function getPlayerTier() {
-    return LEAGUES.tiers.find(t => playerXP >= t.minXP && playerXP < t.maxXP) || LEAGUES.tiers[0];
+    return LEAGUES.tiers.find(t => xp >= t.minXP && xp < t.maxXP) || LEAGUES.tiers[0];
 }
 
 function calculatePortfolioValue() {
@@ -2808,7 +2808,7 @@ function renderChallenges() {
     const tierEl = document.getElementById('tierBadge');
     if (!tierEl) return;
     const tier = getPlayerTier();
-    tierEl.textContent = `${tier.name} ${tier.icon} • ${playerXP} XP`;
+    tierEl.textContent = `${tier.name} ${tier.icon} • ${xp} XP`;
 
     // Daily
     const dailyDiv = document.getElementById('dailyChallenges');
