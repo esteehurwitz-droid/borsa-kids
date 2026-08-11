@@ -1805,8 +1805,9 @@ function startGame() {
         console.log('👋 Onboarding hidden');
         setLang(currentLang);
         console.log('🌍 Language set:', currentLang);
-        showTutorial();
-        console.log('📖 Tutorial shown');
+        // Skip tutorial - show main app directly
+        document.getElementById('mainApp').style.display = 'block';
+        console.log('📖 Main app shown (tutorial skipped)');
     } catch (e) {
         console.error('❌ startGame error:', e);
         alert('Error: ' + e.message);
