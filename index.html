@@ -2982,6 +2982,17 @@ function init() {
     setInterval(() => { if (!liveDataOK) marketTick(); }, 8000);
     setInterval(triggerRandomEvent, 45000);
     setInterval(saveState, 30000);
+
+    // Backup event listeners for language buttons
+    ['he','en','ar','ru'].forEach(lang => {
+        const btn = document.getElementById('btn-' + lang);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                console.log('🌍 Language button clicked:', lang);
+                setLang(lang);
+            });
+        }
+    });
 }
 
 init();
