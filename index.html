@@ -2082,11 +2082,15 @@ function checkProfitBadges() {
 }
 
 function getTotalValue() {
-    let v = balance;
+    let v = parseFloat(balance) || 100000;
     Object.keys(portfolio).forEach(sym => {
         const h = portfolio[sym];
         const s = stocks.find(st=>st.symbol===sym);
-        if (s) v += h.qty * s.price;
+        if (s) {
+            const qty = parseFloat(h.qty) || 0;
+            const price = parseFloat(s.price) || 0;
+            v += qty * price;
+        }
     });
     return v;
 }
@@ -2233,8 +2237,11 @@ function renderPortfolio() {
         const h = portfolio[sym];
         const stock = stocks.find(s=>s.symbol===sym);
         if (!stock) return;
-        const cur = h.qty*stock.price;
-        const inv = h.qty*h.avgPrice;
+        const qty = parseFloat(h.qty) || 0;
+        const price = parseFloat(stock.price) || 0;
+        const avgPrice = parseFloat(h.avgPrice) || 0;
+        const cur = qty*price;
+        const inv = qty*avgPrice;
         totalVal+=cur; totalInv+=inv;
         const pl = cur-inv;
         const plPct = ((pl/inv)*100).toFixed(1);
