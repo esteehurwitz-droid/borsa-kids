@@ -2648,12 +2648,13 @@ function renderCoursesMenu() {
     if (!menu) return;
     menu.innerHTML = '';
 
+    const trans = T[currentLang];
     const courseList = [
-        {key:'basics', name:'📚 What Are Stocks?'},
-        {key:'portfolio', name:'🎯 Building Portfolios'},
-        {key:'risk', name:'⚠️ Understanding Risk'},
-        {key:'charts', name:'📈 Reading Charts'},
-        {key:'news', name:'📰 News & Markets'}
+        {key:'basics', name:trans.learn[0].title || '📚 What Are Stocks?'},
+        {key:'portfolio', name:trans.learn[12].title || '🎯 Building Portfolios'},
+        {key:'risk', name:trans.learn[3].title || '⚠️ Understanding Risk'},
+        {key:'charts', name:trans.learn[4].title || '📈 Reading Charts'},
+        {key:'news', name:trans.learn[9].title || '📰 News & Markets'}
     ];
 
     courseList.forEach(course => {
