@@ -788,9 +788,9 @@
         <div class="balance-row">
             <div class="balance-info">
                 <div class="label" id="lblCash">מזומן זמין</div>
-                <div class="balance-amount" id="balance">₪100,000</div>
+                <div class="balance-amount" id="balance">$100,000</div>
             </div>
-            <div class="profit-loss pos" id="profitLoss">+₪0 (0%)</div>
+            <div class="profit-loss pos" id="profitLoss">+$0 (0%)</div>
         </div>
 
         <div class="xp-row">
@@ -895,11 +895,11 @@
             <div class="portfolio-summary">
                 <div class="summary-card">
                     <div class="s-label" id="lblPortfolioVal">שווי תיק</div>
-                    <div class="s-value" id="portfolioTotal">₪0</div>
+                    <div class="s-value" id="portfolioTotal">$0</div>
                 </div>
                 <div class="summary-card">
                     <div class="s-label" id="lblProfitLoss">רווח/הפסד</div>
-                    <div class="s-value" id="portfolioPL">₪0</div>
+                    <div class="s-value" id="portfolioPL">$0</div>
                 </div>
                 <div class="summary-card">
                     <div class="s-label" id="lblStocks">מניות</div>
@@ -922,7 +922,7 @@
                     <div>
                         <div class="calc-label" id="calcLblMonthly">השקעה חודשית</div>
                         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                            <span>₪50</span><strong id="calcMonthlyVal" style="color:var(--gold)">₪200</strong><span>₪1,000</span>
+                            <span>$50</span><strong id="calcMonthlyVal" style="color:var(--gold)">$200</strong><span>$1,000</span>
                         </div>
                         <input type="range" class="calc-slider" id="sliderMonthly" min="50" max="1000" step="50" value="200" oninput="updateCalc()">
                     </div>
@@ -943,8 +943,8 @@
                 </div>
                 <div class="calc-result">
                     <div class="snowball" id="calcSnowball">⛄</div>
-                    <div class="calc-big" id="calcResult">₪0</div>
-                    <div class="calc-small" id="calcSub">מתוך השקעה של ₪0</div>
+                    <div class="calc-big" id="calcResult">$0</div>
+                    <div class="calc-small" id="calcSub">מתוך השקעה של $0</div>
                     <div style="font-size:11px;opacity:0.6;margin-top:6px" id="calcProfit"></div>
                 </div>
             </div>
@@ -954,7 +954,7 @@
             </div>
             <div class="tutorial">
                 <h3 id="calcTip2Title">😴 כסף שוכב = כסף שיורד</h3>
-                <p id="calcTip2Text">בגלל אינפלציה, ₪100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.</p>
+                <p id="calcTip2Text">בגלל אינפלציה, $100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.</p>
             </div>
         </div>
 
@@ -996,7 +996,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12px">
             <div style="background:#f0f9ff;padding:8px;border-radius:8px;text-align:center">
                 <div style="color:#666" id="detailPriceLabel">Current Price</div>
-                <div id="detailPrice" style="font-weight:bold;font-size:16px">₪0</div>
+                <div id="detailPrice" style="font-weight:bold;font-size:16px">$0</div>
             </div>
             <div style="background:#f9f0ff;padding:8px;border-radius:8px;text-align:center">
                 <div style="color:#666" id="detailChangeLabel">24h Change</div>
@@ -1030,7 +1030,7 @@
         </div>
         <div class="total-cost-row">
             <span class="label" id="lblTotalCost">עלות כוללת</span>
-            <span class="amount" id="modalTotal">₪0</span>
+            <span class="amount" id="modalTotal">$0</span>
         </div>
         <div class="action-btns">
             <button class="btn btn-cancel" onclick="closeTradeModal()" id="btnCancel">ביטול</button>
@@ -1111,7 +1111,7 @@ const T = {
         newsLoading:'⏳ טוען חדשות שוק...',
         newsError:'📡 החדשות זמינות בsites השוק',
         tutorialScreens:[
-            {title:'🎮 ברוכה הבאה!', icon:'🎯', text:'אתה בגן השעשועים של כסף! זה משחק לימוד בו אתה משחק בעסקים באמצעות ₪100,000 <b>כסף דמיוני</b> (לא אמיתי - אל דאגו!).'},
+            {title:'🎮 ברוכה הבאה!', icon:'🎯', text:'אתה בגן השעשועים של כסף! זה משחק לימוד בו אתה משחק בעסקים באמצעות $100,000 <b>כסף דמיוני</b> (לא אמיתי - אל דאגו!).'},
             {title:'📈 מה זה מניות?', icon:'📊', text:'מניה היא חלק קטן מחברה. כשאתה קונה מניה, אתה הופך לבעלים! אם החברה זוכה → אתה מרוויח! אם היא מפסידה → אתה מפסיד (אבל בכסף דמיוני בלבד).'},
             {title:'💡 XP = חוכמה', icon:'⭐', text:'תשובו שאלות, קנו מניות, קיבלו רווחים = <b>XP!</b> כשתצברו XP מספיק, אתם עולים לרמה גבוהה יותר! רמה 1: משקיע מתחיל • רמה 6: וורן באפט קטן!'},
             {title:'🚀 בואו נתחילו!', icon:'🎉', text:'לחצו על <b>Market 🏪</b> לקנות את המניה הראשונה שלכם. ראו מחירים חיים, תיווך עם חברים, קראו שיעורים - הכל למד!'},
@@ -1132,15 +1132,15 @@ const T = {
         err4chars:'הכנס קוד בן 4 תווים', errOwnCode:'זה הקוד שלך! הכנס קוד של חבר',
         connectedMsg:(n)=>`🎉 מחובר לשוק של ${n}!`,
         friendJoined:(n)=>`👋 ${n} מחובר ומסחר!`,
-        holdingQty:(qty,avg)=>`${qty} מניות · ממוצע ₪${avg}`,
+        holdingQty:(qty,avg)=>`${qty} מניות · ממוצע ${avg}`,
         levelNames:['משקיע מתחיל','סוחר צעיר','מנהל תיקים','מנתח שוק','גורו בורסה','וורן באפט קטן'],
         calcTitle:'⏳ מחשבון העתיד',
         calcLblMonthly:'השקעה חודשית', calcLblYears:'מספר שנים', calcLblReturn:'תשואה שנתית',
         calcTip1Title:'💡 כדור השלג של כסף',
         calcTip1Text:'ריבית דריבית היא כמו כדור שלג שמתגלגל: ככל שהוא מתגלגל יותר זמן, הוא גדל מהר יותר. כסף שמושקע בגיל 10 שווה הרבה יותר מכסף שמושקע בגיל 30!',
         calcTip2Title:'😴 כסף שוכב = כסף שיורד',
-        calcTip2Text:'בגלל אינפלציה, ₪100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.',
-        calcSaved:(t,i)=>`מתוך השקעה של ₪${i.toLocaleString()} • רווח: ₪${(t-i).toLocaleString()}`,
+        calcTip2Text:'בגלל אינפלציה, $100 היום שווים פחות בעתיד. אם הכסף לא מושקע, הוא מאבד ערך בלי שאפילו תרגיש.',
+        calcSaved:(t,i)=>`מתוך השקעה של ${i.toLocaleString()} • רווח: ${(t-i).toLocaleString()}`,
         lbTitle:'🏆 לוח תוצאות',
         lbYou:'(אתה)',
         achievements:{
@@ -1175,7 +1175,7 @@ const T = {
             {icon:'🦾',title:'רובוטיקה',text:'רובוטים בבתי חולים, במפעלים, בחלל. ISRG עושה רובוטים לניתוחים. ABB עושה רובוטים תעשייתיים!'},
             {icon:'⚡',title:'אנרגיה נקייה',text:'סולار (ENPH), רוח, מכוניות חשמליות (TSLA). ממשלות דוחפות אנרגיה ירוקה = תעשייה גדלה!'},
             {icon:'🎮',title:'משחקים ומטאוורס',text:'RBLX = פלטפורמת משחקים לילדים. NFLX = סרטים וסדרות. בידור דיגיטלי הוא ענק!'},
-            {icon:'💰',title:'דיבידנדים',text:'חברות כמה משלמות למניות שלהן. דוגמה: דיבידנד של ₪10 למניה = כסף חינם רק בעלות!'},
+            {icon:'💰',title:'דיבידנדים',text:'חברות כמה משלמות למניות שלהן. דוגמה: דיבידנד של $10 למניה = כסף חינם רק בעלות!'},
             {icon:'📱',title:'ענקי הטק',text:'אפל = אייפון ומק • גוגל = חיפוש ויוטיוב • מיקרוסופט = וינדוס • מטא = פייסבוק. 4 הענקים שולטים!'},
             {icon:'💳',title:'מערכות תשלום',text:'ויזה מעבדת טריליונים בעסקאות בשנה. כל פעם שאתה מעביר כרטיס, ויזה מרוויחה!'},
             {icon:'🏦',title:'מניות בנקים',text:'JPMorgan = ענק בנקאות. בנקים מרוויחים מהלוואות ומסחר. יציבים אבל גדול לאט מטק.'},
@@ -1204,7 +1204,7 @@ const T = {
         ob_placeholder:'Your name...',
         appTitle:'📈 Kids Stock Market',
         marketOpen:'Market Open', marketNight:'Market Quiet (Night)',
-        lblCash:'Available Cash', lblGameCode:'Your Game Code',
+        lblCash:'Available Cash ($)', lblGameCode:'Your Game Code',
         btnPlayWithFriend:'👥 Play with Friend',
         tabMarket:'🏪 Market', tabWatchlist:'❤️ Watchlist', tabCourses:'📖 Courses', tabChallenges:'🎯 Quests', tabIndices:'📊 Indices', tabPortfolio:'💼 Portfolio',
         tabLeaderboard:'🏆 League', tabFuture:'⏳ Future', tabLearn:'📚 Learn',
@@ -1231,15 +1231,15 @@ const T = {
         err4chars:'Enter a 4-character code', errOwnCode:'That\'s your code! Enter a friend\'s code',
         connectedMsg:(n)=>`🎉 Connected to ${n}'s market!`,
         friendJoined:(n)=>`👋 ${n} is connected and trading!`,
-        holdingQty:(qty,avg)=>`${qty} shares · avg ₪${avg}`,
+        holdingQty:(qty,avg)=>`${qty} shares · avg ${avg}`,
         levelNames:['Beginner','Young Trader','Portfolio Manager','Market Analyst','Guru','Little Buffett'],
         calcTitle:'⏳ Future Calculator',
         calcLblMonthly:'Monthly Investment', calcLblYears:'Number of Years', calcLblReturn:'Annual Return',
         calcTip1Title:'💡 The Money Snowball',
         calcTip1Text:'Compound interest is like a snowball rolling downhill: the longer it rolls, the bigger it grows. Money invested at age 10 is worth much more than money invested at 30!',
         calcTip2Title:'😴 Idle Money = Shrinking Money',
-        calcTip2Text:'Because of inflation, ₪100 today buys less in the future. If money isn\'t invested, it loses value silently.',
-        calcSaved:(t,i)=>`From an investment of ₪${i.toLocaleString()} • Profit: ₪${(t-i).toLocaleString()}`,
+        calcTip2Text:'Because of inflation, $100 today buys less in the future. If money isn\'t invested, it loses value silently.',
+        calcSaved:(t,i)=>`From an investment of ${i.toLocaleString()} • Profit: ${(t-i).toLocaleString()}`,
         lbTitle:'🏆 Leaderboard', lbYou:'(you)',
         achievements:{
             firstBuy:{icon:'🎯',title:'First Buy!'},
@@ -1264,7 +1264,7 @@ const T = {
         quizComplete:'✅ Quiz Complete! 🎉', quizCompleteMsg:'You answered all questions! Keep learning!', quizExplanation:'💡 Explanation:',
         newsTitle:'📰 Real Stock Market News', newsLoading:'📰 Loading real market news...', newsError:'📡 Real news temporarily unavailable.',
         tutorialScreens:[
-            {title:'🎮 Welcome!', icon:'🎯', text:'Welcome to the Money Playground! This is a learning game where you trade stocks using <b>₪100,000 of pretend money</b> (not real – don\'t worry!).'},
+            {title:'🎮 Welcome!', icon:'🎯', text:'Welcome to the Money Playground! This is a learning game where you trade stocks using <b>$100,000 of pretend money</b> (not real – don\'t worry!).'},
             {title:'📈 What are Stocks?', icon:'📊', text:'A stock is a tiny piece of a company. When you buy a stock, you become a part-owner! If the company wins → you profit! If it loses → you lose (but with fake money only).'},
             {title:'💡 XP = Knowledge', icon:'⭐', text:'Answer questions, buy stocks, make profits = <b>XP!</b> Collect enough XP and you level up! Level 1: Beginner • Level 6: Little Buffett!'},
             {title:'🚀 Let\'s Go!', icon:'🎉', text:'Tap <b>Market 🏪</b> to buy your first stock. See live prices, trade with friends, read lessons – all for learning!'},
@@ -1324,15 +1324,15 @@ const T = {
         err4chars:'أدخل رمزاً من 4 أحرف', errOwnCode:'هذا رمزك! أدخل رمز صديق',
         connectedMsg:(n)=>`🎉 متصل بسوق ${n}!`,
         friendJoined:(n)=>`👋 ${n} متصل ويتداول!`,
-        holdingQty:(qty,avg)=>`${qty} أسهم · متوسط ₪${avg}`,
+        holdingQty:(qty,avg)=>`${qty} أسهم · متوسط ${avg}`,
         levelNames:['مبتدئ','تاجر صغير','مدير محفظة','محلل سوق','خبير','وارن بافيت صغير'],
         calcTitle:'⏳ حاسبة المستقبل',
         calcLblMonthly:'الاستثمار الشهري', calcLblYears:'عدد السنوات', calcLblReturn:'العائد السنوي',
         calcTip1Title:'💡 كرة الثلج المالية',
         calcTip1Text:'الفائدة المركبة مثل كرة ثلج تتدحرج: كلما تدحرجت أطول، كبرت أسرع. المال المستثمر في سن 10 يساوي أكثر بكثير من المال المستثمر في سن 30!',
         calcTip2Title:'😴 المال الخامل = مال ينقص',
-        calcTip2Text:'بسبب التضخم، 100₪ اليوم تشتري أقل في المستقبل. إذا لم يُستثمر المال، يفقد قيمته دون أن تشعر.',
-        calcSaved:(t,i)=>`من استثمار ₪${i.toLocaleString()} • الربح: ₪${(t-i).toLocaleString()}`,
+        calcTip2Text:'بسبب التضخم، 100$ اليوم تشتري أقل في المستقبل. إذا لم يُستثمر المال، يفقد قيمته دون أن تشعر.',
+        calcSaved:(t,i)=>`من استثمار ${i.toLocaleString()} • الربح: ${(t-i).toLocaleString()}`,
         quizCorrect:'✅ إجابة صحيحة! +50 XP', quizWrong:'❌ إجابة خاطئة',
         quizProgress:'السؤال', quizOf:'من',
         quizComplete:'✅ اكتمل الاختبار! 🎉', quizCompleteMsg:'لقد أجبت على جميع الأسئلة! استمر في التعلم!', quizExplanation:'💡 الشرح:',
@@ -1401,15 +1401,15 @@ const T = {
         err4chars:'Введите код из 4 символов', errOwnCode:'Это ваш код! Введите код друга',
         connectedMsg:(n)=>`🎉 Подключён к рынку ${n}!`,
         friendJoined:(n)=>`👋 ${n} подключён и торгует!`,
-        holdingQty:(qty,avg)=>`${qty} акций · среднее ₪${avg}`,
+        holdingQty:(qty,avg)=>`${qty} акций · среднее ${avg}`,
         levelNames:['Новичок','Молодой трейдер','Менеджер','Аналитик','Гуру','Мини-Баффет'],
         calcTitle:'⏳ Калькулятор будущего',
         calcLblMonthly:'Ежемесячные вложения', calcLblYears:'Количество лет', calcLblReturn:'Годовая доходность',
         calcTip1Title:'💡 Снежный ком денег',
         calcTip1Text:'Сложный процент — это снежный ком: чем дольше катится, тем быстрее растёт. Деньги, вложенные в 10 лет, стоят намного больше, чем в 30!',
         calcTip2Title:'😴 Лежачие деньги = уменьшающиеся деньги',
-        calcTip2Text:'Из-за инфляции ₪100 сегодня покупают меньше в будущем. Если деньги не инвестировать, они теряют ценность незаметно.',
-        calcSaved:(t,i)=>`Из вложений ₪${i.toLocaleString()} • Прибыль: ₪${(t-i).toLocaleString()}`,
+        calcTip2Text:'Из-за инфляции $100 сегодня покупают меньше в будущем. Если деньги не инвестировать, они теряют ценность незаметно.',
+        calcSaved:(t,i)=>`Из вложений ${i.toLocaleString()} • Прибыль: ${(t-i).toLocaleString()}`,
         quizCorrect:'✅ Правильно! +50 XP', quizWrong:'❌ Неправильный ответ',
         quizProgress:'Вопрос', quizOf:'из',
         quizComplete:'✅ Викторина завершена! 🎉', quizCompleteMsg:'Вы ответили на все вопросы! Продолжайте учиться!', quizExplanation:'💡 Объяснение:',
@@ -1542,10 +1542,8 @@ let currentStock = null;
 let activeSectorIdx = 0;
 let sessionCode = generateCode();
 let connectedPlayers = [];
-// Detect browser language or default to English
-let currentLang = navigator.language?.startsWith('he') ? 'he' :
-                 navigator.language?.startsWith('ar') ? 'ar' :
-                 navigator.language?.startsWith('ru') ? 'ru' : 'en';
+// Always start with English (user can switch language)
+let currentLang = 'en';
 let playerName = '';
 let playerAvatar = '🦁';
 let selectedAvatarIdx = 0;
@@ -1576,8 +1574,7 @@ function loadState() {
         earnedBadges = s.earnedBadges ?? {};
         playerName = s.playerName ?? '';
         playerAvatar = s.playerAvatar ?? '🦁';
-        // Preserve saved language, don't force Hebrew
-        if (s.currentLang) currentLang = s.currentLang;
+        // Always start in English (user can switch language)
         if (s.stocks) {
             s.stocks.forEach(saved => {
                 const stock = stocks.find(st => st.symbol === saved.symbol);
@@ -1626,13 +1623,13 @@ const CHALLENGES = {
     weekly: [
         {id:'w1',title:'🌟 Portfolio Builder',desc:'Own 5 different stocks',reward:500,check:()=>Object.keys(portfolio).length >= 5,icon:'🎯'},
         {id:'w2',title:'💎 Diversifier',desc:'Own stocks from 3+ sectors',reward:400,check:()=>{const s=new Set(Object.values(portfolio).map(p=>p.sector));return s.size>=3},icon:'🌈'},
-        {id:'w3',title:'📈 Profit Quest',desc:'Make ₪500 profit',reward:600,check:()=>calculatePortfolioValue().profit>=500,icon:'💰'},
+        {id:'w3',title:'📈 Profit Quest',desc:'Make $500 profit',reward:600,check:()=>calculatePortfolioValue().profit>=500,icon:'💰'},
         {id:'w4',title:'🏆 League Climber',desc:'Gain 500 XP this week',reward:700,icon:'⭐'},
         {id:'w5',title:'🎓 Education Week',desc:'Complete 5 quizzes',reward:800,check:()=>parseInt(sessionStorage.getItem('quizzesCompleted')||0)>=5,icon:'🎓'},
     ],
     seasonal: [
         {id:'s1',title:'🚀 Stock Master',desc:'Own 15 stocks',reward:2000,check:()=>Object.keys(portfolio).length >= 15,icon:'🎯'},
-        {id:'s2',title:'💎 Million Maker',desc:'Get portfolio to ₪150,000',reward:3000,check:()=>calculatePortfolioValue().total >= 150000,icon:'💰'},
+        {id:'s2',title:'💎 Million Maker',desc:'Get portfolio to $150,000',reward:3000,check:()=>calculatePortfolioValue().total >= 150000,icon:'💰'},
         {id:'s3',title:'🏅 Level 6 Master',desc:'Reach Level 6: Little Buffett',reward:5000,check:()=>playerLevel >= 5,icon:'👑'},
         {id:'s4',title:'🌍 Global Trader',desc:'Trade all 6 market indices',reward:2500,icon:'🌐'},
     ]
@@ -2139,7 +2136,7 @@ function renderStocks() {
             </div>
           </div>
           <div class="stock-right">
-            <div class="price">₪${stock.price.toFixed(2)}</div>
+            <div class="price">$${stock.price.toFixed(2)}</div>
             <div class="mini-chart">${bars}</div>
             <div class="change-badge ${up?'positive':'negative'}">${up?'+':''}${pct}%</div>
           </div>`;
@@ -2205,7 +2202,7 @@ function renderIndices() {
                     <div style="font-size: 11px; color: #999;">${idx.description}</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: bold; font-size: 14px;">₪${data.price.toFixed(2)}</div>
+                    <div style="font-weight: bold; font-size: 14px;">$${data.price.toFixed(2)}</div>
                     <div style="font-size: 12px; color: ${up ? '#00b09b' : '#ff416c'}; font-weight: bold;">
                         ${up ? '▲' : '▼'} ${Math.abs(data.changePercent).toFixed(2)}%
                     </div>
@@ -2225,8 +2222,8 @@ function renderPortfolio() {
 
     if (keys.length===0) {
         list.innerHTML = `<div class="empty-state"><div class="emoji">💼</div><div>${t().emptyPortfolio}</div></div>`;
-        document.getElementById('portfolioTotal').textContent = '₪0';
-        document.getElementById('portfolioPL').textContent = '₪0';
+        document.getElementById('portfolioTotal').textContent = '$0';
+        document.getElementById('portfolioPL').textContent = '$0';
         document.getElementById('portfolioCount').textContent = '0';
         return;
     }
@@ -2254,16 +2251,16 @@ function renderPortfolio() {
             </div>
           </div>
           <div class="holding-value">
-            <div class="current-value">₪${cur.toFixed(2)}</div>
+            <div class="current-value">${cur.toFixed(2)}</div>
             <div class="change-badge ${up?'positive':'negative'}">${up?'+':''}${plPct}%</div>
           </div>`;
         list.appendChild(el);
     });
 
     const totalPL = totalVal-totalInv;
-    document.getElementById('portfolioTotal').textContent = `₪${totalVal.toFixed(0)}`;
+    document.getElementById('portfolioTotal').textContent = `$${totalVal.toFixed(0)}`;
     document.getElementById('portfolioPL').style.color = totalPL>=0 ? '#28a745' : '#dc3545';
-    document.getElementById('portfolioPL').textContent = `${totalPL>=0?'+':''}₪${totalPL.toFixed(0)}`;
+    document.getElementById('portfolioPL').textContent = `${totalPL>=0?'+':''}$${totalPL.toFixed(0)}`;
     document.getElementById('portfolioCount').textContent = keys.length;
 }
 
@@ -2289,7 +2286,7 @@ function renderLeaderboard() {
           <div class="rank-badge ${rankClass}">${rankIcon}</div>
           <div class="lb-player-info">
             <div class="lb-name">${player.name}${player.isMe?' <span style="font-size:11px;color:var(--accent)">('+t().lbYou+')</span>':''}</div>
-            <div class="lb-sub">₪${Math.round(player.totalValue).toLocaleString()}</div>
+            <div class="lb-sub">${Math.round(player.totalValue).toLocaleString()}</div>
           </div>
           <div class="lb-value">
             <div class="${pl>=0?'lb-change-pos':'lb-change-neg'}">${pl>=0?'+':''}${plPct}%</div>
@@ -2361,7 +2358,7 @@ const quizData = [
     {q:'Which tech company operates YouTube?',a:['Google (GOOGL)','Amazon','Netflix','TikTok'],c:0,exp:'Google owns YouTube. YouTube has billions of users. Search + video = massive revenue.'},
     {q:'What makes Tesla (TSLA) unique?',a:['Electric vehicles + energy storage','Cheapest car prices','Oldest car company','Luxury brand only'],c:0,exp:'Tesla revolutionized EVs. Elon Musk vision = sustainable energy future.'},
     {q:'What is the Fed?',a:['Federal Reserve - controls interest rates','Federal police','Football federation','Federated companies'],c:0,exp:'Fed = US central bank. When Fed raises rates, borrowing is expensive. Stock market can fall.'},
-    {q:'What is inflation?',a:['Rising prices of goods over time','Blowing up a balloon','Stock price increase','Money supply decrease'],c:0,exp:'Inflation = ₪100 today = ₪90 value next year. Why investing beats keeping cash!'},
+    {q:'What is inflation?',a:['Rising prices of goods over time','Blowing up a balloon','Stock price increase','Money supply decrease'],c:0,exp:'Inflation = $100 today = $90 value next year. Why investing beats keeping cash!'},
     {q:'What is a recession?',a:['Two consecutive quarters of declining GDP','Short market dip','Seasonal downturn','Temporary slowdown'],c:0,exp:'Recession = economic contraction. Companies earn less. But recessions are temporary!'},
     {q:'What is a stock buyback?',a:['Company buys back its own shares','Returning merchandise','Stock exchange','Repayment program'],c:0,exp:'Buyback = company uses cash to reduce share count. Remaining shares = more valuable!'},
     {q:'What is earnings per share (EPS)?',a:['Company profit ÷ number of shares','Employee payment system','Entry price schedule','Economic projection score'],c:0,exp:'EPS = important metric. Higher EPS = more profitable per share. Compare across companies!'},
@@ -2437,14 +2434,14 @@ async function fetchRealNews() {
 
 function updateHeader() {
     const balEl = document.getElementById('balance');
-    if (balEl) balEl.textContent = `₪${balance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')}`;
+    if (balEl) balEl.textContent = `$${balance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')}`;
     const total = getTotalValue();
     const pl = total - 100000;
     const plPct = ((pl/100000)*100).toFixed(1);
     const plEl = document.getElementById('profitLoss');
     if (plEl) {
         plEl.className = 'profit-loss ' + (pl>=0?'pos':'neg');
-        plEl.textContent = `${pl>=0?'+':''}₪${Math.abs(pl).toFixed(0)} (${pl>=0?'+':''}${plPct}%)`;
+        plEl.textContent = `${pl>=0?'+':''}$${Math.abs(pl).toFixed(0)} (${pl>=0?'+':''}${plPct}%)`;
     }
 }
 
@@ -2458,7 +2455,7 @@ function updateCalc() {
     const years = parseFloat(document.getElementById('sliderYears').value);
     const rate = parseFloat(document.getElementById('sliderReturn').value) / 100;
 
-    document.getElementById('calcMonthlyVal').textContent = `₪${monthly}`;
+    document.getElementById('calcMonthlyVal').textContent = `${monthly}`;
     document.getElementById('calcYearsVal').textContent = years;
     document.getElementById('calcReturnVal').textContent = `${(rate*100).toFixed(1)}%`;
 
@@ -2467,7 +2464,7 @@ function updateCalc() {
     const fv = monthly * ((Math.pow(1+monthRate, months)-1) / monthRate) * (1+monthRate);
     const invested = monthly * months;
 
-    document.getElementById('calcResult').textContent = `₪${Math.round(fv).toLocaleString()}`;
+    document.getElementById('calcResult').textContent = `${Math.round(fv).toLocaleString()}`;
     document.getElementById('calcSub').textContent = t().calcSaved ? t().calcSaved(Math.round(fv), Math.round(invested)) : '';
 
     // snowball emoji grows with time
@@ -2486,10 +2483,10 @@ function openTradeModal(stock) {
     document.getElementById('modalIcon').style.background = '#f0f1ff';
     document.getElementById('modalName').textContent = stock.name;
     document.getElementById('modalDesc').textContent = desc(stock.symbol);
-    document.getElementById('modalPrice').textContent = `₪${stock.price.toFixed(2)}`;
+    document.getElementById('modalPrice').textContent = `$${stock.price.toFixed(2)}`;
     document.getElementById('qtyInput').value = '';
     document.getElementById('qtyInput').placeholder = t().qtyPlaceholder;
-    document.getElementById('modalTotal').textContent = '₪0';
+    document.getElementById('modalTotal').textContent = '$0';
     document.getElementById('sellBtn').style.display = hasHolding ? 'block' : 'none';
     document.getElementById('tradeModal').classList.add('show');
 }
@@ -2507,7 +2504,7 @@ function openStockDetail(stock) {
     document.getElementById('detailIcon').textContent = stock.icon;
     document.getElementById('detailName').textContent = stock.name;
     document.getElementById('detailDesc').textContent = desc(stock.symbol);
-    document.getElementById('detailPrice').textContent = `₪${stock.price.toFixed(2)}`;
+    document.getElementById('detailPrice').textContent = `$${stock.price.toFixed(2)}`;
 
     const change = stock.changePercent || 0;
     const changeEl = document.getElementById('detailChange');
@@ -2569,7 +2566,7 @@ function adjustQty(delta) {
 
 function updateCost() {
     const qty = parseInt(document.getElementById('qtyInput').value)||0;
-    document.getElementById('modalTotal').textContent = `₪${(qty*(currentStock?.price||0)).toFixed(2)}`;
+    document.getElementById('modalTotal').textContent = `$${(qty*(currentStock?.price||0)).toFixed(2)}`;
 }
 
 function executeTrade(type) {
@@ -2776,7 +2773,7 @@ function renderWatchlist() {
             <div style="background:#f9f9f9;padding:12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
                 <div>
                     <div style="font-weight:bold;font-size:14px">${stock.icon} ${stock.name} (${stock.symbol})</div>
-                    <div style="font-size:12px;color:#666">₪${stock.price.toFixed(2)}</div>
+                    <div style="font-size:12px;color:#666">${stock.price.toFixed(2)}</div>
                 </div>
                 <div style="text-align:right">
                     <div style="font-weight:bold;color:${stock.change >= 0 ? '#00b09b' : '#ff416c'};font-size:14px">${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%</div>
@@ -2896,9 +2893,9 @@ async function fetchLivePrices() {
             const stock = stocks.find(s => s.symbol === q.symbol);
             if (!stock) return;
 
-            stock.price = q.price;
-            stock.change = q.change;
-            stock.changePercent = q.changePercent;
+            stock.price = parseFloat(q.price) || stock.price;
+            stock.change = parseFloat(q.change) || 0;
+            stock.changePercent = parseFloat(q.changePercent) || 0;
 
             if (q.history && Array.isArray(q.history)) {
                 priceHistory[stock.symbol] = [...q.history];

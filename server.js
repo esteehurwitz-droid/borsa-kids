@@ -283,7 +283,7 @@ setInterval(simulationTick, 5000);
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * GET /api/stocks - Get current market state (with USD→NIS conversion)
+ * GET /api/stocks - Get current market state (in USD)
  */
 app.get('/api/stocks', (req, res) => {
   const data = Object.values(marketState).map(stock => ({
@@ -291,10 +291,10 @@ app.get('/api/stocks', (req, res) => {
     name: stock.name,
     icon: stock.icon,
     sector: stock.sector,
-    price: Math.round(stock.price * USD_TO_NIS * 100) / 100, // Convert USD to NIS
-    change: Math.round(stock.change * USD_TO_NIS * 100) / 100,
-    changePercent: stock.changePercent, // Percentage stays the same
-    history: stock.history.map(h => Math.round(h * USD_TO_NIS * 100) / 100) // Convert history too
+    price: Math.round(stock.price * 100) / 100, // Keep in USD
+    change: Math.round(stock.change * 100) / 100,
+    changePercent: stock.changePercent,
+    history: stock.history.map(h => Math.round(h * 100) / 100) // Keep history in USD
   }));
   res.json(data);
 });
