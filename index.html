@@ -2673,10 +2673,15 @@ function showCourseOptions(courseKey) {
     const menu = document.getElementById('coursesMenu');
     const details = document.getElementById('courseDetails');
 
+    console.log('🎓 showCourseOptions called with:', courseKey);
+    console.log('📚 MINI_COURSES:', MINI_COURSES);
+
     menu.style.display = 'none';
     document.getElementById('courseContent').style.display = 'block';
 
     const courses = MINI_COURSES[courseKey];
+    console.log('📖 Course data:', courses);
+
     let html = `<h3 style="margin:0 0 12px 0">${Object.values(courses)[0].title}</h3>`;
     html += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">`;
 
