@@ -2861,10 +2861,8 @@ function showNotification(msg, type='success') {
 // ════════════════════════════════════════════════════════
 
 // Smart API URL detection: localStorage → localhost → prompt for Replit URL
-// Use relative path for Replit (same domain), or localhost for dev, or saved custom URL
-let MARKET_API = localStorage.getItem('MARKET_API_URL') || (
-    window.location.hostname === 'localhost' ? 'http://localhost:5000' : ''
-);
+// Railway production backend URL for live prices
+let MARKET_API = localStorage.getItem('MARKET_API_URL') || 'https://borsa-kids-production.up.railway.app';
 let liveDataOK = false;
 
 // Setup wizard for Replit deployment
