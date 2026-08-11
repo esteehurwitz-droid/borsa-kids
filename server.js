@@ -7,6 +7,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('.')); // Serve static files (index.html, CSS, JS) from current directory
 
 // Get API key from environment or use default (get yours free at https://finnhub.io)
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || 'demo';
